@@ -1,12 +1,12 @@
 import React from 'react';
 
 import style from './index.module.less';
-// import MPreview from '../../components/MEditor/Preview';
+import MPreview from '../../components/MEditor/Preview';
 
 const initialSource = `
 # Live demo
     
-Changes are automatically rendered as you type.
+> Changes are automatically rendered as you type.
 
 ## Table of Contents
 
@@ -32,6 +32,15 @@ React.render(
 );
 \`\`\`
 
+\`\`\`html
+<div>111</div>
+<h1>111</h1>
+\`\`\`
+
+\`\`\`ts
+const a = 12
+\`\`\`
+
 Pretty neat, eh?
 
 ## Tables?
@@ -44,7 +53,7 @@ Pretty neat, eh?
 
 ## More info?
 
-Read usage information and more on [GitHub](//github.com/rexxars/react-markdown)
+Read **usage** information and more on [GitHub](//github.com/rexxars/react-markdown)
 
 ---------------
 
@@ -55,10 +64,8 @@ interface PropsI {
 }
 
 const Index: React.FC<PropsI> = () => (
-  <div className="container">
-    <div className={style.itemContainer}>
-      {/* <MPreview value={initialSource} fullscreen /> */}
-    </div>
+  <div className="container" style={{ padding: 0, marginTop: 0 }}>
+    <MPreview value={initialSource} fullscreen />
   </div>
 );
 
