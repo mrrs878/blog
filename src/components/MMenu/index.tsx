@@ -7,6 +7,7 @@ import { ClickParam } from 'antd/es/menu';
 import style from './index.module.less';
 import avatarImg from '../../assets/images/avatar.png';
 import githubLogo from '../../assets/images/github.jpg';
+import MContent from '../MContent';
 
 interface PropsI extends RouteComponentProps{}
 
@@ -17,10 +18,10 @@ const MMenu = (props: PropsI) => {
   return (
     <div className={`container ${style.menuC}`}>
       <div className={style.avatarC}>
-        <img src={avatarImg} style={{ borderRadius: '50%' }} width="100%" alt="" />
+        <img src={avatarImg} style={{ borderRadius: '50%' }} height={120} alt="" />
       </div>
       <div className={style.callMeC}>
-        <img src={githubLogo} width="20%" alt="" />
+        <img className={style.callMe} src={githubLogo} width="20%" alt="" />
       </div>
       <Menu mode="inline" onClick={onMenuItemClick}>
         <Menu.Item key="/home">首页</Menu.Item>

@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import CodeBlock from './CodeBlock';
 import './preview.module.less'
 import '../../assets/less/md.theme.orange.less'
+import 'highlight.js/styles/a11y-dark.css'
 
 interface PropsI {
   value: string;

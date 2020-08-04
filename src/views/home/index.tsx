@@ -2,6 +2,7 @@ import React from 'react';
 
 import style from './index.module.less';
 import MPreview from '../../components/MEditor/Preview';
+import MContent from '../../components/MContent';
 
 const initialSource = `
 # Live demo
@@ -64,8 +65,11 @@ interface PropsI {
 }
 
 const Index: React.FC<PropsI> = () => (
-  <div className="container" style={{ padding: 0, marginTop: 0 }}>
-    <MPreview value={initialSource} fullscreen />
+  <div>
+    <div className="container" style={{ padding: 0, marginTop: 0 }}>
+      <MPreview value={initialSource} fullscreen />
+    </div>
+    <MContent />
   </div>
 );
 
