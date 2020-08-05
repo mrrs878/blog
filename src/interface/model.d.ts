@@ -49,3 +49,10 @@ interface DashboardDataI {
   key: string;
   value: number;
 }
+
+interface ContentI {
+  title: string;
+  level: number;
+  key: string;
+  children: Array<ContentI>;
+}

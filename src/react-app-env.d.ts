@@ -19,3 +19,7 @@ declare module '*.jpg' {
   const classes: string;
   export default classes;
 }
+declare module '*.md' {
+  const classes: string;
+  export default classes;
+}

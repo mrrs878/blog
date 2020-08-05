@@ -18,6 +18,7 @@
     "node-waves": "^0.7.6",
     "prop-types": "^15.7.2",
     "ramda": "^0.27.0",
+    "raw-loader": "^4.0.1",
     "rc-field-form": "^1.4.4",
     "rc-tree": "^3.5.0",
     "react": "^16.13.1",

@@ -1,4 +1,5 @@
-const { override, fixBabelImports, addLessLoader, addWebpackAlias } = require('customize-cra');
+const { override, fixBabelImports, addLessLoader, addWebpackAlias, addWebpackModuleRule } = require('customize-cra');
+const RawLoader = require('raw-loader');
 const path = require('path');
 function resolve(dir) {
   return path.join(__dirname, '.', dir)
@@ -16,5 +17,6 @@ module.exports = override(
   }),
   addWebpackAlias({
     "@": resolve("src")
-  })
+  }),
+  addWebpackModuleRule({test: /\.md$/, use: 'raw-loader'})
 );

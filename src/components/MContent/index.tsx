@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
 
+import { Tree } from 'antd';
 import style from './index.module.less';
 
-const MContent = () => {
+interface PropsI {
+  data: Array<ContentI>
+}
+
+const MContent = (props: PropsI) => {
   useEffect(() => {}, []);
   return (
-    <div className={`content ${style.contentC}`}>this is table of contents</div>
+    <Tree className={style.contentC} treeData={props.data} />
   );
 };
 
