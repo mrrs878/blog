@@ -11,6 +11,7 @@ const ALL_ROUTES: Array<RouteConfigI> = [
   {
     path: ALL_ROUTES_MAP.all,
     component: ALL,
+    title: '归档',
   },
 ];
 

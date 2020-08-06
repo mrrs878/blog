@@ -11,6 +11,7 @@ const TAG_ROUTES: Array<RouteConfigI> = [
   {
     path: TAG_ROUTES_MAP.tag,
     component: TAG,
+    title: '标签',
   },
 ];
 

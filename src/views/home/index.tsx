@@ -1,49 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import MPreview from '../../components/MEditor/Preview';
-import TestMd from '../../assets/markdown/test.md';
-import MContent from '../../components/MContent';
+import MOverview from '../../components/MOverview';
+import MGoTop from '../../components/MGoTop';
 
 interface PropsI {
 }
 
-function getTitle(content: string) {
-  const tmpArr: Array<ContentI> = [];
-  let tmp: ContentI = { title: '', level: 2, key: '', children: [] };
-  content.replace(/(#+)[^#][^\n]*?(?:\n)/g, (match, m1) => {
-    const title = match.replace('\n', '')
-      .replace(/^#+/, '')
-      .replace(/\([^)]*?\)/, '');
-    const level = m1.length;
-    const item = {
-      title,
-      level,
-      key: title,
-      children: [],
-    };
-    if (level <= tmp.level) {
-      tmpArr.push(item);
-      tmp = item;
-    } else tmp.children.push(item);
-    return '';
-  });
-
-  return tmpArr;
-}
-
-const Index: React.FC<PropsI> = () => {
-  const [tableOfContent, setTableOfContent] = useState<Array<ContentI>>([]);
-  useEffect(() => {
-    const res = getTitle(TestMd);
-    console.log(res);
-    setTableOfContent(res);
-  }, []);
-  return (
-    <div className="container" style={{ padding: 0, marginTop: 0 }}>
-      <MPreview value={TestMd} fullscreen />
-      <MContent data={tableOfContent} />
-    </div>
-  );
-};
+const Index: React.FC<PropsI> = () => (
+  <div className="container homeC" style={{ padding: 0, marginTop: 0 }}>
+    {
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => (
+        <MOverview
+          title="hello Mr.RS"
+          description="Here is my new blog site"
+          category="hello"
+          tag="hello"
+          createTime="2020/8/6 10:00"
+          modifyTime="2020/8/6 10:00"
+          watch={0}
+        />
+      ))
+    }
+    <MGoTop referEle=".homeC" />
+  </div>
+);
 
 export default Index;

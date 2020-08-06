@@ -1,22 +1,69 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './CodeBlock';
 import './preview.module.less'
 import '../../assets/less/md.theme.orange.less'
 import 'highlight.js/styles/a11y-dark.css'
 
+import style from './preview.module.less'
+import {CalendarOutlined, FolderOutlined} from "@ant-design/icons/lib";
+import {Space} from "antd";
+
 interface PropsI {
   value: string;
   fullscreen?: boolean;
 }
 
-const Preview = (props: PropsI) => (
-  <div className={`container`} id="write" style={{ display: 'block', overflow: "unset" }}>
-    <ReactMarkdown
-      source={props.value}
-      renderers={{ code: CodeBlock }}
-    />
-  </div>
-);
+const Header = (props: any) => {
+  const { children, level } = props
+  if (level === 1) return <h1>{ children[0]?.props?.value }</h1>
+  return (
+    <h2>
+      <a href=''/>
+      <span>{ children[0]?.props?.value }</span>
+    </h2>
+  )
+}
+
+const Preview = (props: PropsI) => {
+  const [formattedMd, setFormattedMd] = useState<{ head: ArticleSubI; content: string }>();
+  useEffect(() => {
+    const src = props.value.split('---');
+    const [str, title, createTime, tag, category] = src[1].replace(/\r\n/g, '').match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || [];
+    console.log(title, createTime, tag, category);
+    const head: ArticleSubI = {
+      title,
+      category,
+      tag,
+      description: '',
+      createTime,
+      modifyTime: '',
+      watch: 0,
+    };
+    setFormattedMd({ head, content: src[2] });
+  }, []);
+  useEffect(() => {
+    document.title = formattedMd?.head?.title || 'my blog'
+  }, [formattedMd?.head?.title])
+  return (
+    <div className={`container previewC`} id="write" style={{ display: 'block', overflow: "unset" }}>
+      <div className={style.titleC}>
+        <h1>{ formattedMd?.head?.title }</h1>
+        <Space style={{ color: '#999' }}>
+          { formattedMd?.head?.createTime && <span><CalendarOutlined /> 创建于{ formattedMd?.head?.createTime }</span> }
+          { formattedMd?.head?.modifyTime && <span>更新于{ formattedMd?.head?.modifyTime }</span>}
+          { formattedMd?.head?.category && <span><FolderOutlined /> 分类于<a href={`/category/${formattedMd?.head?.category}`}>{ formattedMd?.head?.category }</a></span> }
+        </Space>
+      </div>
+      <ReactMarkdown
+        source={formattedMd?.content}
+        renderers={{
+          code: CodeBlock,
+          heading: Header
+        }}
+      />
+    </div>
+  )
+}
 
 export default Preview;

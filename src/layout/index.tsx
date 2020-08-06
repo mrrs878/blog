@@ -14,8 +14,9 @@ import MMenu from '../components/MMenu';
 import MLoading from '../components/MLoading';
 import Router from '../router';
 import { AppState } from '../store';
+import MFooter from '../components/MFooter';
 
-const { Content, Sider } = Layout;
+const { Content, Sider, Footer } = Layout;
 
 const mapState2Props = (state: AppState) => ({
   fullScreen: state.common.fullScreen,
@@ -39,6 +40,7 @@ const MLayout = (props: PropsI) => (
         </div>
       </Content>
     </Layout>
+    <MFooter />
   </BrowserRouter>
 );
 

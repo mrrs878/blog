@@ -56,3 +56,13 @@ interface ContentI {
   key: string;
   children: Array<ContentI>;
 }
+
+interface ArticleSubI {
+  title: string;
+  description: string;
+  category: string;
+  tag: string;
+  createTime: string;
+  modifyTime: string;
+  watch: number;
+}

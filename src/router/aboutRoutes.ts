@@ -11,6 +11,7 @@ const ABOUT_ROUTES: Array<RouteConfigI> = [
   {
     path: ABOUT_ROUTES_MAP.about,
     component: ABOUT,
+    title: '关于我',
   },
 ];
 

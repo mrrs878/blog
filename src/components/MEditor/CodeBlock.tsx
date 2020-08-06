@@ -7,6 +7,7 @@ import 'highlight.js/styles/github.css';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('js', javascript);
+hljs.registerLanguage('jsx', javascript);
 hljs.registerLanguage('html', html);
 hljs.registerLanguage('ts', ts);
 hljs.registerLanguage('typescript', ts);

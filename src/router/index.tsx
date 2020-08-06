@@ -14,6 +14,7 @@ import { ABOUT_ROUTES, ABOUT_ROUTES_MAP } from './aboutRoutes';
 import { ALL_ROUTES, ALL_ROUTES_MAP } from './allRoutes';
 import { CATEGORY_ROUTES, CATEGORY_ROUTES_MAP } from './categoryRoutes';
 import { TAG_ROUTES, TAG_ROUTES_MAP } from './tagRoutes';
+import { ARTICLE_ROUTES, ARTICLE_ROUTES_MAP } from './articleRoutes';
 
 const ROUTES_MAP = {
   ...HOME_ROUTES_MAP,
@@ -21,6 +22,7 @@ const ROUTES_MAP = {
   ...ALL_ROUTES_MAP,
   ...TAG_ROUTES_MAP,
   ...CATEGORY_ROUTES_MAP,
+  ...ARTICLE_ROUTES_MAP,
 };
 
 const ROUTES: Array<RouteConfigI> = [
@@ -29,10 +31,12 @@ const ROUTES: Array<RouteConfigI> = [
   ...ALL_ROUTES,
   ...TAG_ROUTES,
   ...CATEGORY_ROUTES,
+  ...ARTICLE_ROUTES,
 ];
 
 const Router = () => {
   function beforeEach(route: RouteConfigI) {
+    document.title = route.title;
     const Com = route.component;
     return <Com />;
   }
