@@ -59,10 +59,10 @@ interface ContentI {
 
 interface ArticleSubI {
   title: string;
-  description: string;
+  description?: string;
   category: string;
   tag: string;
   createTime: string;
-  modifyTime: string;
-  watch: number;
+  modifyTime?: string;
+  watch?: number;
 }

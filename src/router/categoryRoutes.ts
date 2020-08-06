@@ -15,8 +15,6 @@ const CATEGORY_ROUTES: Array<RouteConfigI> = [
   },
 ];
 
-console.log(store.getState().common);
-
 export {
   CATEGORY_ROUTES_MAP,
   CATEGORY_ROUTES,

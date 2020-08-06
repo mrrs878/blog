@@ -1,5 +1,4 @@
 import React from 'react';
-import store from '../store';
 
 const ALL = React.lazy(() => import('../views/all'));
 
@@ -14,8 +13,6 @@ const ALL_ROUTES: Array<RouteConfigI> = [
     title: '归档',
   },
 ];
-
-console.log(store.getState().common);
 
 export {
   ALL_ROUTES,

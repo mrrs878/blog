@@ -1,4 +1,4 @@
-// This optional code is used to register a service worker.
+// This optional code is used to register a service js.
 // register() is not called by default.
 
 // This lets the app load faster on subsequent visits in production, and gives
@@ -33,7 +33,7 @@ export function register(config?: Config) {
       window.location.href,
     );
     if (publicUrl.origin !== window.location.origin) {
-      // Our service worker won't work if PUBLIC_URL is on a different origin
+      // Our service js won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
       // serve assets; see https://github.com/facebook/create-react-app/issues/2374
       return;
@@ -43,19 +43,19 @@ export function register(config?: Config) {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       if (isLocalhost) {
-        // This is running on localhost. Let's check if a service worker still exists or not.
+        // This is running on localhost. Let's check if a service js still exists or not.
         checkValidServiceWorker(swUrl, config);
 
         // Add some additional logging to localhost, pointing developers to the
-        // service worker/PWA documentation.
+        // service js/PWA documentation.
         navigator.serviceWorker.ready.then(() => {
           console.log(
             'This web app is being served cache-first by a service '
-              + 'worker. To learn more, visit https://bit.ly/CRA-PWA',
+              + 'js. To learn more, visit https://bit.ly/CRA-PWA',
           );
         });
       } else {
-        // Is not localhost. Just register service worker
+        // Is not localhost. Just register service js
         registerValidSW(swUrl, config);
       }
     });
@@ -75,7 +75,7 @@ function registerValidSW(swUrl: string, config?: Config) {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
-              // but the previous service worker will still serve the older
+              // but the previous service js will still serve the older
               // content until all client tabs are closed.
               console.log(
                 'New content is available and will be used when all '
@@ -102,30 +102,30 @@ function registerValidSW(swUrl: string, config?: Config) {
       };
     })
     .catch((error) => {
-      console.error('Error during service worker registration:', error);
+      console.error('Error during service js registration:', error);
     });
 }
 
 function checkValidServiceWorker(swUrl: string, config?: Config) {
-  // Check if the service worker can be found. If it can't reload the page.
+  // Check if the service js can be found. If it can't reload the page.
   fetch(swUrl, {
     headers: { 'Service-Worker': 'script' },
   })
     .then((response) => {
-      // Ensure service worker exists, and that we really are getting a JS file.
+      // Ensure service js exists, and that we really are getting a JS file.
       const contentType = response.headers.get('content-type');
       if (
         response.status === 404
         || (contentType != null && contentType.indexOf('javascript') === -1)
       ) {
-        // No service worker found. Probably a different app. Reload the page.
+        // No service js found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready.then((registration) => {
           registration.unregister().then(() => {
             window.location.reload();
           });
         });
       } else {
-        // Service worker found. Proceed as normal.
+        // Service js found. Proceed as normal.
         registerValidSW(swUrl, config);
       }
     })

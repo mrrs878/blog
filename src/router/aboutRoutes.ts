@@ -15,8 +15,6 @@ const ABOUT_ROUTES: Array<RouteConfigI> = [
   },
 ];
 
-console.log(store.getState().common);
-
 export {
   ABOUT_ROUTES_MAP,
   ABOUT_ROUTES,

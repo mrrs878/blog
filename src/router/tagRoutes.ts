@@ -15,8 +15,6 @@ const TAG_ROUTES: Array<RouteConfigI> = [
   },
 ];
 
-console.log(store.getState().common);
-
 export {
   TAG_ROUTES_MAP,
   TAG_ROUTES,
