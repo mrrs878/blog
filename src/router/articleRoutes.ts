@@ -1,5 +1,4 @@
 import React from 'react';
-import store from '../store';
 
 const ARTICLE = React.lazy(() => import('../views/article'));
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu } from 'antd';
+import { Input, Menu } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { ClickParam } from 'antd/es/menu';
 
@@ -7,10 +7,19 @@ import style from './index.module.less';
 import avatarImg from '../../assets/images/avatar.png';
 import githubLogo from '../../assets/images/github.jpg';
 
+const { Search } = Input;
+
 interface PropsI extends RouteComponentProps{}
 
 const MMenu = (props: PropsI) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState<Array<string>>([]);
+  const [isScroll, setIsScroll] = useState(false);
+  useEffect(() => {
+    window.addEventListener('scroll', (e) => {
+      const { y } = document.querySelector('.homeSearchRef')?.getBoundingClientRect() || { y: 0 };
+      setIsScroll(y <= -470);
+    });
+  }, []);
   useEffect(() => {
     if (props.location.pathname === '/') {
       setSelectedMenuItem(['/home']);
@@ -37,6 +46,12 @@ const MMenu = (props: PropsI) => {
         <Menu.Item key="/category">分类</Menu.Item>
         <Menu.Item key="/all">归档</Menu.Item>
       </Menu>
+      <Search
+        className={`${style.searchC} ${isScroll ? style.top : ''}`}
+        placeholder="input search text"
+        onSearch={(value) => console.log(value)}
+        enterButton
+      />
     </div>
   );
 };

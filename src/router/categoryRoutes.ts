@@ -1,5 +1,4 @@
 import React from 'react';
-import store from '../store';
 
 const CATEGORY = React.lazy(() => import('../views/category'));
 

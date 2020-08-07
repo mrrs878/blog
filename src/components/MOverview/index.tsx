@@ -36,12 +36,12 @@ const MOverview = (props: PropsI) => (
       <span>
         <CarryOutOutlined />
         ：
-        { props.modifyTime }
+        --
       </span>
       <span>
         <EyeOutlined />
         ：
-        { props.watch }
+        --
       </span>
     </div>
   </div>

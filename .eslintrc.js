@@ -29,5 +29,6 @@ module.exports = {
     'no-plusplus': 0,
     'consistent-return': 0,
     'no-param-reassign': 0,
+    'no-unused-vars': 0
   }
 };

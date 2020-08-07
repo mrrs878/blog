@@ -9,24 +9,14 @@ import { Layout } from 'antd';
 import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import { connect } from 'react-redux';
 import MMenu from '../components/MMenu';
 import MLoading from '../components/MLoading';
 import Router from '../router';
-import { AppState } from '../store';
 import MFooter from '../components/MFooter';
 
-const { Content, Sider, Footer } = Layout;
+const { Content, Sider } = Layout;
 
-const mapState2Props = (state: AppState) => ({
-  fullScreen: state.common.fullScreen,
-});
-
-interface PropsI{
-  fullScreen: boolean
-}
-
-const MLayout = (props: PropsI) => (
+const MLayout = () => (
   <BrowserRouter>
     <Layout>
       <Sider theme="light">
@@ -44,4 +34,4 @@ const MLayout = (props: PropsI) => (
   </BrowserRouter>
 );
 
-export default connect(mapState2Props)(MLayout);
+export default MLayout;

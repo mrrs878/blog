@@ -16,7 +16,16 @@ const MContent = (props: PropsI) => {
     });
   }, []);
   return (
-    <Tree expandedKeys={props.data.map((item) => item.key)} className={`${style.contentC} ${isScroll ? style.top : ''}`} treeData={props.data} />
+    <div>
+      { props.data.length > 0
+      && (
+      <Tree
+        expandedKeys={props.data.map((item) => item.key)}
+        className={`${style.contentC} ${isScroll ? style.top : ''}`}
+        treeData={props.data}
+      />
+      )}
+    </div>
   );
 };
 

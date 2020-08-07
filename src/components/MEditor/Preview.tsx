@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import ReactMarkdown from 'react-markdown';
+import {CalendarOutlined, FolderOutlined} from "@ant-design/icons/lib";
+import {Space} from "antd";
+
 import CodeBlock from './CodeBlock';
 import './preview.module.less'
 import '../../assets/less/md.theme.orange.less'
 import 'highlight.js/styles/a11y-dark.css'
-
 import style from './preview.module.less'
-import {CalendarOutlined, FolderOutlined} from "@ant-design/icons/lib";
-import {Space} from "antd";
 
 interface PropsI {
   value: string;
@@ -19,7 +19,6 @@ const Header = (props: any) => {
   if (level === 1) return <h1>{ children[0]?.props?.value }</h1>
   return (
     <h2>
-      <a href=''/>
       <span>{ children[0]?.props?.value }</span>
     </h2>
   )
@@ -29,8 +28,9 @@ const Preview = (props: PropsI) => {
   const [formattedMd, setFormattedMd] = useState<{ head: ArticleSubI; content: string }>();
   useEffect(() => {
     const src = props.value.split('---');
-    const [str, title, createTime, tag, category] = src[1].replace(/\r\n/g, '').match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || [];
-    console.log(title, createTime, tag, category);
+    const [__, title, createTime, tag, category] = src[1]
+      ?.replace(/\r\n/g, '')
+      .match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || [];
     const head: ArticleSubI = {
       title,
       category,
@@ -41,10 +41,10 @@ const Preview = (props: PropsI) => {
       watch: 0,
     };
     setFormattedMd({ head, content: src[2] });
-  }, []);
+  }, [props.value]);
   useEffect(() => {
     document.title = formattedMd?.head?.title || 'my blog'
-  }, [formattedMd?.head?.title])
+  }, [formattedMd])
   return (
     <div className={`container previewC`} id="write" style={{ display: 'block', overflow: "unset" }}>
       <div className={style.titleC}>

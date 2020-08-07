@@ -1,10 +1,4 @@
 interface CommonStateI {
-  count: number,
-  user: UserI,
-  menu: Array<MenuItemI>;
-  menuArray: Array<MenuItemI>;
-  menuRoutes: MenuRoutesI;
-  dicts: Array<DictI>;
-  menuTitles: MenuTitlesI;
-  fullScreen: boolean;
+  count: number;
+  articleInfo: Array<ArticleSubI>;
 }

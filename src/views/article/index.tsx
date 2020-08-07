@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { clone } from 'ramda';
-import TestMd from '../../assets/markdown/articles/服务端渲染-简介.md';
+import { RouteComponentProps, withRouter } from 'react-router';
+
 import MPreview from '../../components/MEditor/Preview';
 import MContent from '../../components/MContent';
 import MGoTop from '../../components/MGoTop';
+
+interface PropsI extends RouteComponentProps<{ title: string }>{}
 
 function getTitle(_content: string) {
   const tmpArr: Array<ContentI> = [];
@@ -12,6 +15,7 @@ function getTitle(_content: string) {
   content.replace(/(#+)[^#][^\n]*?(?:\n)/g, (match, m1) => {
     const title = match.replace('\n', '')
       .replace(/^#+/, '')
+      .replace(/\*+/g, '')
       .replace(/\([^)]*?\)/, '');
     const level = m1.length;
     const item = {
@@ -30,19 +34,24 @@ function getTitle(_content: string) {
   return tmpArr;
 }
 
-const Article = () => {
+const Article = (props: PropsI) => {
+  const [md, setMD] = useState<string>('--- ---');
   const [tableOfContent, setTableOfContent] = useState<Array<ContentI>>([]);
   useEffect(() => {
-    const res = getTitle(TestMd);
-    setTableOfContent(res);
-  }, []);
+    const title = props.match.params.title.trimStart();
+    import(`../../assets/markdown/articles/${title}.md`).then((res) => {
+      const content = getTitle(res.default);
+      setTableOfContent(content);
+      setMD(res.default);
+    });
+  }, [props.match.params.title]);
   return (
     <div style={{ padding: 0, marginTop: 0, position: 'relative' }}>
-      <MPreview value={TestMd} fullscreen />
+      <MPreview value={md} fullscreen />
       <MContent data={tableOfContent} />
       <MGoTop referEle=".previewC" />
     </div>
   );
 };
 
-export default Article;
+export default withRouter(Article);

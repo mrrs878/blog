@@ -1,5 +1,4 @@
 import React from 'react';
-import store from '../store';
 
 const TAG = React.lazy(() => import('../views/tag'));
 
