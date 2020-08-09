@@ -1,5 +1,5 @@
 ---
-title: go-基础
+title: go-极速入门
 date: 2020-1-14 13:43:45
 tags: go
 categories: go

@@ -22,6 +22,7 @@ const ARTICLE_MODULE = {
         import(`../assets/markdown/articles/${fileName}`).then((res) => {
           const [__, title, createTime, tag, category] = res?.default?.split('---')[1]
             ?.replace(/\r\n/g, '')
+            ?.replace(/\n/g, '')
             ?.match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || [];
           const description = res?.default?.split('---')[2]
             ?.replace(/#+/g, '')
@@ -32,7 +33,7 @@ const ARTICLE_MODULE = {
         });
       });
       setTimeout(() => {
-        const sorted = sortBy((a) => a.createTime, articleInfo).reverse();
+        const sorted = sortBy((a) => new Date(a.createTime), articleInfo).reverse();
         localStorage.setItem('articleInfo', JSON.stringify(sorted));
         resolve(sorted);
       });

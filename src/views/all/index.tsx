@@ -3,7 +3,7 @@ import { Timeline } from 'antd';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { last } from 'ramda';
+import { clone, groupBy, last } from 'ramda';
 import { AppState } from '../../store';
 import style from './index.module.less';
 import MGoTop from '../../components/MGoTop';
@@ -17,15 +17,22 @@ const mapState2Props = (state: AppState) => ({
 });
 
 const All = (props: PropsI) => {
-  const [dateSplit, setDateSplit] = useState<DynamicObjectKey<number>>([]);
+  const [formattedArticle, setFormattedArticle] = useState<Array<string>>([]);
   useEffect(() => {
-    const tmp: DynamicObjectKey<number> = {};
+    const dateSplit: DynamicObjectKey<number> = {};
     props.articleInfo
-      .map((item) => item.createTime.slice(1, 5))
       .forEach((item) => {
-        tmp[item] = tmp[item] ? tmp[item] + 1 : 1;
+        const time = item.createTime.slice(1, 5);
+        dateSplit[time] = dateSplit[time] ? dateSplit[time] + 1 : 1;
       });
-    setDateSplit(tmp);
+    // setDateSplit(tmp);
+    console.log(dateSplit)
+    const tmp = props.articleInfo.reverse().map((item) => `${item.createTime.split(' ')[1].slice(5)}^${item.title.trim()}`);
+    tmp.unshift(Reflect.ownKeys(dateSplit)[0] as string)
+    Reflect.ownKeys(dateSplit).forEach((item) => {
+      tmp.splice((dateSplit[item as string] >> 0) + 1, 0, item as string);
+    });
+    console.log(tmp)
   }, [props.articleInfo]);
   return (
     <div className="container homeSearchRef">
