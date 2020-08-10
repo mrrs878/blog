@@ -28,9 +28,10 @@ const Preview = (props: PropsI) => {
   const [formattedMd, setFormattedMd] = useState<{ head: ArticleSubI; content: string }>();
   useEffect(() => {
     const src = props.value.split('---');
-    const [__, title, createTime, tag, category] = src[1]
+    const [title, createTime, tag, category] = src[1]
       ?.replace(/\r\n/g, '')
-      .match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || [];
+      .match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || []
+      .slice(1, 5)
     const head: ArticleSubI = {
       title,
       category,
