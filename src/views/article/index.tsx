@@ -12,24 +12,25 @@ function getTitle(_content: string) {
   const tmpArr: Array<ContentI> = [];
   const content = clone(_content);
   let tmp: ContentI = { title: '', level: 2, key: '', children: [] };
-  content.replace(/(#+)[^#][^\n]*?(?:\n)/g, (match, m1) => {
-    const title = match.replace('\n', '')
-      .replace(/^#+/, '')
-      .replace(/\*+/g, '')
-      .replace(/\([^)]*?\)/, '');
-    const level = m1.length;
-    const item = {
-      title,
-      level,
-      key: title,
-      children: [],
-    };
-    if (level <= tmp.level) {
-      tmpArr.push(item);
-      tmp = item;
-    } else tmp.children.push(item);
-    return '';
-  });
+  content.replace(/```([\s\S]*)```/g, '')
+    .replace(/(#+)[^#][^\n]*?(?:\n)/g, (match, m1) => {
+      const title = match.replace('\n', '')
+        .replace(/^#+/, '')
+        .replace(/\*+/g, '')
+        .replace(/\([^)]*?\)/, '');
+      const level = m1.length;
+      const item = {
+        title,
+        level,
+        key: title,
+        children: [],
+      };
+      if (level <= tmp.level) {
+        tmpArr.push(item);
+        tmp = item;
+      } else tmp.children.push(item);
+      return '';
+    });
 
   return tmpArr;
 }
