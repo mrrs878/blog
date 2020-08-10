@@ -2,6 +2,8 @@ FROM nginx
 
 COPY ./build/ /usr/share/nginx/html/
 
-COPY ./nginx.conf /etc/nginx/sites-enabled
+RUN rm /etc/nginx/conf.d/default.conf
+
+ADD nginx.conf /etc/nginx/conf.d/
 
 EXPOSE 80
