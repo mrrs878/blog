@@ -5,10 +5,10 @@ services:
   - docker
 
 before_install:
-  - npm install
+  - yarn install
 
 script:
-  - npm run build
+  - npm run build:prod
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t mrrs878/hello_docker:latest .
   - docker push mrrs878/hello_docker:latest
