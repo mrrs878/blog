@@ -8,44 +8,41 @@ import './preview.module.less'
 import '../../assets/less/md.theme.orange.less'
 import 'highlight.js/styles/a11y-dark.css'
 import style from './preview.module.less'
+import {AppState} from "../../store";
+import {connect} from "react-redux";
 
 interface PropsI {
   value: string;
   fullscreen?: boolean;
+  articleInfo: Array<ArticleSubI>;
 }
 
+const mapState2Props = (state: AppState) => ({
+  articleInfo: state.common.articleInfo,
+});
+
 const Header = (props: any) => {
-  const { children, level } = props
-  if (level === 1) return <h1>{ children[0]?.props?.value }</h1>
+  const { children, level } = props;
+  if (level === 1) return <h1>{ children[0]?.props?.value }</h1>;
   return (
     <h2>
       <span>{ children[0]?.props?.value }</span>
     </h2>
   )
-}
+};
 
 const Preview = (props: PropsI) => {
   const [formattedMd, setFormattedMd] = useState<{ head: ArticleSubI; content: string }>();
   useEffect(() => {
     const src = props.value.split('---');
-    const [title, createTime, tag, category] = src[1]
-      ?.replace(/\r\n/g, '')
-      .match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || []
-      .slice(1, 5)
-    const head: ArticleSubI = {
-      title,
-      category,
-      tag,
-      description: '',
-      createTime,
-      modifyTime: '',
-      watch: 0,
-    };
+    const title = src[1].match(/title: (.+)/) || '';
+    const head = props.articleInfo.find(item => item.title === title[1])
+      || { title: '', category: '', createTime: '', tag: '' };
     setFormattedMd({ head, content: src[2] });
-  }, [props.value]);
+  }, [props.value, props.articleInfo]);
   useEffect(() => {
     document.title = formattedMd?.head?.title || 'my blog'
-  }, [formattedMd])
+  }, [formattedMd]);
   return (
     <div className={`container previewC`} id="write" style={{ display: 'block', overflow: "unset" }}>
       <div className={style.titleC}>
@@ -65,6 +62,6 @@ const Preview = (props: PropsI) => {
       />
     </div>
   )
-}
+};
 
-export default Preview;
+export default connect(mapState2Props)(Preview);
