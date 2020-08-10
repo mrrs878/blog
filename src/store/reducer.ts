@@ -10,6 +10,8 @@ function commonReducer(state = DEFAULT_COMMON_STATE, action: ActionsT): CommonSt
       return { ...state, count: action.data };
     case actions.UPDATE_ARTICLE_INFO:
       return { ...state, articleInfo: action.data };
+    case actions.UPDATE_TOTAL_WORD:
+      return { ...state, totalWord: action.data };
     default:
       return state;
   }

@@ -3,7 +3,7 @@ import { Timeline } from 'antd';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { clone, groupBy, last } from 'ramda';
+import { groupBy } from 'ramda';
 import { AppState } from '../../store';
 import style from './index.module.less';
 import MGoTop from '../../components/MGoTop';
@@ -17,22 +17,15 @@ const mapState2Props = (state: AppState) => ({
 });
 
 const All = (props: PropsI) => {
-  const [formattedArticle, setFormattedArticle] = useState<Array<string>>([]);
+  const [formattedArticle, setFormattedArticle] = useState<Array<ArticleSubI>>([]);
   useEffect(() => {
-    const dateSplit: DynamicObjectKey<number> = {};
-    props.articleInfo
-      .forEach((item) => {
-        const time = item.createTime.slice(1, 5);
-        dateSplit[time] = dateSplit[time] ? dateSplit[time] + 1 : 1;
-      });
-    // setDateSplit(tmp);
-    console.log(dateSplit)
-    const tmp = props.articleInfo.reverse().map((item) => `${item.createTime.split(' ')[1].slice(5)}^${item.title.trim()}`);
-    tmp.unshift(Reflect.ownKeys(dateSplit)[0] as string)
-    Reflect.ownKeys(dateSplit).forEach((item) => {
-      tmp.splice((dateSplit[item as string] >> 0) + 1, 0, item as string);
+    const src = groupBy((item) => item.createTime.slice(0, 4), props.articleInfo);
+    let tmp: Array<ArticleSubI> = [];
+    Reflect.ownKeys(src).forEach((item) => {
+      src[item as string].unshift({ createTime: item as string, title: '', tag: '', category: '' });
+      tmp = [...src[item as string], ...tmp];
     });
-    console.log(tmp)
+    setFormattedArticle(tmp);
   }, [props.articleInfo]);
   return (
     <div className="container homeSearchRef">
@@ -45,11 +38,11 @@ const All = (props: PropsI) => {
           </span>
         </Timeline.Item>
         {
-          props.articleInfo.map((item, index) => (
-            <Timeline.Item style={{ height: '60px' }}>
-              <div className={style.item} onClick={() => props.history.push(`/article/${item.title}`)}>
+          formattedArticle.map((item) => (
+            <Timeline.Item>
+              <div className={`${style.item} ${item.title === '' ? style.big : ''}`} onClick={() => props.history.push(`/article/${item.title}`)}>
                 {
-                  item.createTime.split(' ')[1].slice(5)
+                  (item.title !== '' ? item.createTime.slice(5, 10) : item.createTime.slice(0, 4))
                   + item.title
                 }
               </div>
