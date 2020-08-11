@@ -15,3 +15,9 @@ export function createMockRes<T, P>(url: string | RegExp, type: MockMethodT, tem
 export function getLastItem<T>(src: Array<T>) {
   return src.length === 0 ? src[0] : src[src.length - 1];
 }
+
+export function getDataSetFromEventPath(eventPath: Array<HTMLElement>, elementClass: string) {
+  if (!Array.isArray(eventPath)) return {};
+  const element = eventPath.find((item) => item?.classList?.contains(elementClass));
+  return element?.dataset || {};
+}

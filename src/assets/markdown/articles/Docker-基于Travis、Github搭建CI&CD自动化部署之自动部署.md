@@ -1,6 +1,6 @@
 ---
 title: Docker-基于Travis、Github搭建CI&CD自动化部署之自动部署
-date: 2020-8-10 22:32:00
+date: 2020-8-11 10:32:00
 tags: Docker实战 自动部署
 categories: Docker
 ---
@@ -122,5 +122,7 @@ after_success:
 # Ref:
 
 [centos7 安装rvm及ruby](https://blog.csdn.net/zzzcl112/article/details/80531792)
+
 [手摸手教你搭建 Travis CI 持续集成和自动化部署](https://segmentfault.com/a/1190000018687703)
+
 [Travis-CI自动化测试并部署至自己的CentOS服务器](https://blog.csdn.net/weixin_34088838/article/details/91367043)

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import style from './index.module.less';
 import { AppState } from '../../store';
+import { getDataSetFromEventPath } from '../../tools';
 
 interface PropsI extends RouteComponentProps{
   articleInfo: Array<ArticleSubI>
@@ -22,6 +23,14 @@ const Tag = (props: PropsI) => {
     });
     setTags(res);
   }, [props.articleInfo]);
+
+  function onTagClick(event: any) {
+    event.stopPropagation();
+    const { tag } = getDataSetFromEventPath(event.nativeEvent.path, style.item);
+    if (!tag) return;
+    const article = props.articleInfo.filter((item) => item.tag.includes(tag));
+    if (article.length === 1) props.history.push(`/article/${article[0].title}`);
+  }
   return (
     <div className="container homeSearchRef" style={{ display: 'unset', textAlign: 'center', padding: '0 50px' }}>
       <p style={{ fontSize: 20 }}>
@@ -30,11 +39,19 @@ const Tag = (props: PropsI) => {
         个标签
       </p>
       <br />
-      {
-      Reflect.ownKeys(tags).map((item) => (
-        <span className={`${style.item} ${tags[String(item)] > 2 ? style.big : ''}`} onClick={() => props.history.push(`/tag/${String(item).trim()}`)}>{String(item)}</span>
-      ))
-    }
+      <div onClick={onTagClick}>
+        {
+          Reflect.ownKeys(tags).map((item) => (
+            <span
+              className={`${style.item} ${tags[String(item)] > 1 ? style.big : ''}`}
+              data-tag={item}
+              key={String(item)}
+            >
+              {String(item)}
+            </span>
+          ))
+        }
+      </div>
     </div>
   );
 };

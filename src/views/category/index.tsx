@@ -34,6 +34,7 @@ const Category = (props: PropsI) => {
         {
           Reflect.ownKeys(categories).map((item) => (
             <span
+              key={String(item)}
               className={style.item}
               style={{ paddingBottom: 5 }}
               onClick={() => props.history.push(`/category/${String(item).trim()}`)}

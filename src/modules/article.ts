@@ -28,9 +28,8 @@ const ARTICLE_MODULE = {
             ?.replace(/\n/g, '')
             ?.match(/title:(.+)date:(.+)tags:(.+)categories:(.+)/) || [];
           const description = res?.default?.split('---')[2]
-            ?.replace(/#+/g, '')
-            ?.replace(/\*+/g, '')
-            ?.replace(/```/g, '')
+            ?.replace(/[```#*>\][]/g, '')
+            ?.replace(/\([^)]*?\)/, '')
             ?.slice(0, 200);
           totalWord += res?.default.length || 0;
           const [title, createTime, tag, category] = info.slice(1, 5).map((infoItem: string) => infoItem.trimStart());
