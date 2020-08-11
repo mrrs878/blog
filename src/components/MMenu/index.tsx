@@ -6,6 +6,7 @@ import { ClickParam } from 'antd/es/menu';
 import style from './index.module.less';
 import avatarImg from '../../assets/images/avatar.png';
 import githubLogo from '../../assets/images/github.jpg';
+import npmLogo from '../../assets/images/npm.jpg';
 
 const { Search } = Input;
 
@@ -36,9 +37,14 @@ const MMenu = (props: PropsI) => {
       <div className={style.avatarC}>
         <img src={avatarImg} style={{ borderRadius: '50%' }} height={120} alt="" />
       </div>
-      <a className={style.callMeC} href="https://github.com/mrrs878">
-        <img className={style.callMe} src={githubLogo} width="20%" alt="" />
-      </a>
+      <div className={style.callMeC}>
+        <a href="https://github.com/mrrs878">
+          <img className={style.callMe} src={githubLogo} width="20%" alt="" />
+        </a>
+        <a href="https://www.npmjs.com/~mrrs">
+          <img className={style.callMe} src={npmLogo} width="20%" alt="" />
+        </a>
+      </div>
       <Menu mode="inline" selectedKeys={selectedMenuItem} onClick={onMenuItemClick}>
         <Menu.Item key="/home">首页</Menu.Item>
         <Menu.Item key="/about">关于</Menu.Item>

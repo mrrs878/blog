@@ -1,5 +1,6 @@
 import { sortBy } from 'ramda';
 import store, { actions } from '../store';
+import { GET_FILE_HISTORY } from '../api/github';
 
 const ARTICLE_MODULE = {
   async computeAllOverview(size?: number): Promise<Array<ArticleSubI>> {
@@ -43,6 +44,10 @@ const ARTICLE_MODULE = {
         resolve({ sorted, totalWord });
       });
     });
+  },
+  async getArticleUpdateDate(name: string) {
+    const res = await GET_FILE_HISTORY({ name });
+    console.log(res);
   },
 };
 
