@@ -19,7 +19,7 @@ install:
   - yarn install
 after_success:
   - chmod 600 ~/.ssh/id_rsa
-  - ssh travis@118.190.140.52 -o StrictHostKeyChecking=no 'cd ~/blog && ./update'
+  - ssh travis@118.190.140.52 -o StrictHostKeyChecking=no 'cd ~/blog && sh ./update.sh'
 script:
 - npm run build:prod
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
