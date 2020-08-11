@@ -3,7 +3,7 @@
 echo "pulling image..."
 docker pull mrrs878/blog:latest
 
-echo "stoping old app"
+echo "stopping old app"
 docker container stop blog
 
 echo "remove old container"
@@ -15,4 +15,4 @@ docker container create --name blog -p 8081:80 mrrs878/blog:latest
 echo "starting new app"
 docker container start blog
 
-echo "awesome, you successed!"
+echo "awesome, you succeeded!"

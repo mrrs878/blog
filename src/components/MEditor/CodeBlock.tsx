@@ -4,6 +4,7 @@ import javascript from 'highlight.js/lib/languages/javascript';
 import html from 'highlight.js/lib/languages/vbscript-html';
 import ts from 'highlight.js/lib/languages/typescript';
 import shell from 'highlight.js/lib/languages/shell';
+import yaml from 'highlight.js/lib/languages/yaml';
 import 'highlight.js/styles/github.css';
 
 hljs.registerLanguage('javascript', javascript);
@@ -14,6 +15,7 @@ hljs.registerLanguage('ts', ts);
 hljs.registerLanguage('typescript', ts);
 hljs.registerLanguage('shell script', shell);
 hljs.registerLanguage('shell', shell);
+hljs.registerLanguage('yaml', yaml);
 
 interface PropsI {
   value: string;

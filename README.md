@@ -1,1 +1,2 @@
-# 个人博客 ![](https://www.travis-ci.org/mrrs878/blog.svg?branch=master)
+# 个人博客
+[![Build Status](https://www.travis-ci.org/mrrs878/blog.svg?branch=master)](https://www.travis-ci.org/mrrs878/blog)

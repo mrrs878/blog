@@ -1,5 +1,0 @@
-docker pull mrrs878/blog:latest
-docker container stop blog
-docker container rm blog
-docker container create --name blog -p 8081:80 mrrs878/blog:latest
-docker container start blog
