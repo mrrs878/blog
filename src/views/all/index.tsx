@@ -37,7 +37,7 @@ const All = (props: PropsI) => {
       });
       setFormattedArticle(tmp);
     }
-  }, [props.articleInfo, props.location]);
+  }, [props.articleInfo, props.location, props.match]);
   return (
     <div className="container homeSearchRef">
       <Timeline>
