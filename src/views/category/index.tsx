@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Modal } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import style from '../all/index.module.less';
 import { AppState } from '../../store';
 import { getDataSetFromEventPath } from '../../tools';
-import Chain, { NEXT_SUCCESSOR } from '../../tools/Chain';
 
 interface PropsI extends RouteComponentProps{
   articleInfo: Array<ArticleSubI>;
@@ -15,38 +13,6 @@ interface PropsI extends RouteComponentProps{
 const mapState2Props = (state: AppState) => ({
   articleInfo: state.common.articleInfo,
 });
-
-const tagModalContent = (article: Array<ArticleSubI>, onClick: (item: ArticleSubI) => void) => (
-  <div>
-    <br />
-    {
-      article.map((item) => (
-        <p
-          className={style.item}
-          key={item.title}
-          onClick={() => onClick(item)}
-        >
-          { item.title }
-        </p>
-      ))
-    }
-  </div>
-);
-
-const singleCatHandler = new Chain((article: Array<ArticleSubI>, props: PropsI) => {
-  if (article.length !== 1) return NEXT_SUCCESSOR;
-  props.history.push(`/article/${article[0].title}`);
-});
-const multiCatHandler = new Chain((article: Array<ArticleSubI>, props: PropsI) => {
-  const modal = Modal.info({
-    title: article[0].category,
-    content: tagModalContent(article, (item) => {
-      modal.destroy();
-      props.history.push(`/article/${item.title}`);
-    }),
-  });
-});
-singleCatHandler.setNextSuccessor(multiCatHandler);
 
 const Category = (props: PropsI) => {
   const [categories, setCategories] = useState<DynamicObjectKey<number>>({});
@@ -61,9 +27,7 @@ const Category = (props: PropsI) => {
   function onCategoryClick(event: any) {
     event.stopPropagation();
     const { cat } = getDataSetFromEventPath(event.nativeEvent.path, style.item);
-    if (!cat) return;
-    const article = props.articleInfo.filter((item) => item.category.includes(cat));
-    singleCatHandler.passRequest(article, props);
+    props.history.push(`/all/category/${cat}`);
   }
 
   return (

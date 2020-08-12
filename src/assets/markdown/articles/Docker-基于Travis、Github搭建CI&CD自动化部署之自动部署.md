@@ -119,7 +119,7 @@ after_success:
   - ssh travis@服务器ip -o StrictHostKeyChecking=no 'cd ~/blog && sh ./update.sh'
 ```
 
-# Ref:
+# Ref
 
 [centos7 安装rvm及ruby](https://blog.csdn.net/zzzcl112/article/details/80531792)
 

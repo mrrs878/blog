@@ -45,14 +45,16 @@ const Preview = (props: PropsI) => {
   }, [formattedMd]);
   return (
     <div className={`container previewC`} id="write" style={{ display: 'block', overflow: "unset" }}>
-      <div className={style.titleC}>
-        <h1>{ formattedMd?.head?.title }</h1>
-        <Space style={{ color: '#999' }}>
-          { formattedMd?.head?.createTime && <span><CalendarOutlined /> 创建于{ formattedMd?.head?.createTime }</span> }
-          { formattedMd?.head?.modifyTime && <span>更新于{ formattedMd?.head?.modifyTime }</span>}
-          { formattedMd?.head?.category && <span><FolderOutlined /> 分类于<a href={`/category/${formattedMd?.head?.category}`}>{ formattedMd?.head?.category }</a></span> }
-        </Space>
-      </div>
+      {
+        formattedMd?.head.title && <div className={style.titleC}>
+          <h1>{ formattedMd?.head?.title }</h1>
+          <Space style={{ color: '#999' }}>
+            { formattedMd?.head?.createTime && <span><CalendarOutlined /> 创建于{ formattedMd?.head?.createTime }</span> }
+            { formattedMd?.head?.modifyTime && <span>更新于{ formattedMd?.head?.modifyTime }</span>}
+            { formattedMd?.head?.category && <span><FolderOutlined /> 分类于<a href={`/all/category/${formattedMd?.head?.category}`}>{ formattedMd?.head?.category }</a></span> }
+          </Space>
+        </div>
+      }
       <ReactMarkdown
         source={formattedMd?.content}
         renderers={{

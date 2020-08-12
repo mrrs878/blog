@@ -8,7 +8,7 @@ import { AppState } from '../../store';
 import style from './index.module.less';
 import MGoTop from '../../components/MGoTop';
 
-interface PropsI extends RouteComponentProps{
+interface PropsI extends RouteComponentProps<{ filter: string }>{
   articleInfo: Array<ArticleSubI>
 }
 
@@ -19,21 +19,32 @@ const mapState2Props = (state: AppState) => ({
 const All = (props: PropsI) => {
   const [formattedArticle, setFormattedArticle] = useState<Array<ArticleSubI>>([]);
   useEffect(() => {
-    const src = groupBy((item) => item.createTime.slice(0, 4), props.articleInfo);
-    let tmp: Array<ArticleSubI> = [];
-    Reflect.ownKeys(src).forEach((item) => {
-      src[item as string].unshift({ createTime: item as string, title: '', tag: '', category: '' });
-      tmp = [...src[item as string], ...tmp];
-    });
-    setFormattedArticle(tmp);
-  }, [props.articleInfo]);
+    if (props.location.pathname.match(/tag/g)) {
+      const { filter } = props.match.params;
+      const tmp = props.articleInfo.filter((item) => item.tag === filter);
+      setFormattedArticle(tmp);
+    } else if (props.location.pathname.match(/category/g)) {
+      const { filter } = props.match.params;
+      console.log(filter)
+      const tmp = props.articleInfo.filter((item) => item.category === filter);
+      setFormattedArticle(tmp);
+    } else {
+      const src = groupBy((item) => item.createTime.slice(0, 4), props.articleInfo);
+      let tmp: Array<ArticleSubI> = [];
+      Reflect.ownKeys(src).forEach((item) => {
+        src[item as string].unshift({ createTime: item as string, title: '', tag: '', category: '' });
+        tmp = [...src[item as string], ...tmp];
+      });
+      setFormattedArticle(tmp);
+    }
+  }, [props.articleInfo, props.location]);
   return (
     <div className="container homeSearchRef">
       <Timeline>
         <Timeline.Item style={{ height: '80px', fontSize: '16px' }}>
           <span>
             不错！目前共计：
-            { props.articleInfo.length }
+            { formattedArticle.length }
             篇日志，继续努力！
           </span>
         </Timeline.Item>
