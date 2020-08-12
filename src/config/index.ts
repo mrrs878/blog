@@ -5,7 +5,7 @@ const MAIN_CONFIG = {
   APP_NAME: 'MyDashboard',
   FULL_SCREEN_PAGE: ['/auth/login', '/auth/reg'],
   GITHUB_NAME: 'mrrs878',
-  GITHUB_REPO: 'blog'
+  GITHUB_REPO: 'blog',
 };
 
 export default MAIN_CONFIG;
