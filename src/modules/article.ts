@@ -8,7 +8,7 @@ const ARTICLE_MODULE = {
     const allFileNames = requireContext.keys();
     const _size = size || allFileNames.length;
     const currentTag = localStorage.getItem('currentTag');
-    // localStorage.setItem('currentTag', String(allFileNames.length));
+    localStorage.setItem('currentTag', String(allFileNames.length));
     const info: {sorted: Array<ArticleSubI>, totalWord: number } = (!currentTag || (+currentTag) < allFileNames.length)
       ? await this.computeInfo(allFileNames.splice(0, _size))
       : { sorted: JSON.parse(localStorage.getItem('articleInfo') as string),

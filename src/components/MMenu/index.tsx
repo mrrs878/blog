@@ -3,20 +3,28 @@ import { Input, Menu } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { ClickParam } from 'antd/es/menu';
 
+import { connect } from 'react-redux';
 import style from './index.module.less';
 import avatarImg from '../../assets/images/avatar.png';
 import githubLogo from '../../assets/images/github.jpg';
 import npmLogo from '../../assets/images/npm.jpg';
+import { AppState } from '../../store';
+
+interface PropsI extends RouteComponentProps{
+  articleInfo: Array<ArticleSubI>;
+}
 
 const { Search } = Input;
 
-interface PropsI extends RouteComponentProps{}
+const mapState2Props = (state: AppState) => ({
+  articleInfo: state.common.articleInfo,
+});
 
 const MMenu = (props: PropsI) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState<Array<string>>([]);
   const [isScroll, setIsScroll] = useState(false);
   useEffect(() => {
-    window.addEventListener('scroll', (e) => {
+    window.addEventListener('scroll', () => {
       const { y } = document.querySelector('.homeSearchRef')?.getBoundingClientRect() || { y: 0 };
       setIsScroll(y <= -470);
     });
@@ -29,9 +37,15 @@ const MMenu = (props: PropsI) => {
     const paths = props.location.pathname.split('/');
     setSelectedMenuItem([`/${paths[1]}`]);
   }, [props.location]);
+
   function onMenuItemClick(item: ClickParam) {
     props.history.push(item.key);
   }
+
+  function onSearch(e: string) {
+    props.history.push(e ? `/home/search/${e}` : '/home');
+  }
+
   return (
     <div className={`container ${style.menuC}`}>
       <div className={style.avatarC}>
@@ -55,11 +69,11 @@ const MMenu = (props: PropsI) => {
       <Search
         className={`${style.searchC} ${isScroll ? style.top : ''}`}
         placeholder="input search text"
-        onSearch={(value) => console.log(value)}
+        onSearch={onSearch}
         enterButton
       />
     </div>
   );
 };
 
-export default withRouter(MMenu);
+export default connect(mapState2Props)(withRouter(MMenu));

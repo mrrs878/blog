@@ -28,7 +28,7 @@ const Tag = (props: PropsI) => {
     event.stopPropagation();
     const { tag } = getDataSetFromEventPath(event.nativeEvent.path, style.item);
     if (!tag) return;
-    props.history.push(`/all/tag/${tag}`);
+    props.history.push(`/home/tag/${tag}`);
   }
   return (
     <div className="container homeSearchRef" style={{ display: 'unset', textAlign: 'center', padding: '0 50px' }}>

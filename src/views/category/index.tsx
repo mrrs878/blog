@@ -27,7 +27,7 @@ const Category = (props: PropsI) => {
   function onCategoryClick(event: any) {
     event.stopPropagation();
     const { cat } = getDataSetFromEventPath(event.nativeEvent.path, style.item);
-    props.history.push(`/all/category/${cat}`);
+    props.history.push(`/home/category/${cat}`);
   }
 
   return (
