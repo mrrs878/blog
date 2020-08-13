@@ -51,13 +51,13 @@ rvm install 2.4.4
 rvm use 2.4.2 --default
 ```
 
-# 安装Travis
+## 安装Travis
 
 ```shell script
 gem install travis
 ```
 
-# 添加加密的私钥至代码仓库
+## 添加加密的私钥至代码仓库
 
 **切换至travis用户，在~目录下拉取代码**
 
@@ -86,7 +86,7 @@ before_install:
 - in 参数指定待解密的文件，位于仓库的根目录(Travis执行任务时会先把代码拉到Travis自己的服务器上，并进入仓库更目录)
 - out 参数指定解密后的密钥存放在**Travis服务器**的~/.ssh/id_rsa
 
-# 配置after_success钩子
+## 配置after_success钩子
 
 项目根目录下创建`update.sh`
 
@@ -118,6 +118,19 @@ after_success:
   - chmod 600 ~/.ssh/id_rsa
   - ssh travis@服务器ip -o StrictHostKeyChecking=no 'cd ~/blog && sh ./update.sh'
 ```
+
+## 已存项目迁移
+
+1. docker hub新建仓库
+2. 复制`.dockerignore/.travis.yml/Dockerfile/nginx.conf/update.sh`到项目根目录
+3. 修改`.travis.yml`相关配置（项目名称）
+4. 修改`update.sh`相关配置（项目目录）
+5. 提交代码
+6. 登录服务器，切换至Travis账户
+7. 切换至`~`目录拉取项目代码
+8. 使用`travis encrypt-file ~/.ssh/id_rsa --add`生成密钥。**注意~/.ssh有可能为~\/.ssh需要去掉\\**
+9. 前往Travis控制台开启监控
+10. 手动触发第一次构建
 
 # Ref
 
