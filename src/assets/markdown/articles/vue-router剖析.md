@@ -5,9 +5,7 @@ tags: Vue.js研读 vue-router
 categories: Vue.js
 ---
 
-# vue-router
-
-## 路由
+# 路由
 
 路由最早由后端提出，用于根据不同的请求返回不同的页面。大致流程如下：
 
@@ -16,11 +14,11 @@ categories: Vue.js
 3. 根据服务器的路由配置，返回相应信息（可以是html、json、图片等）
 4. 浏览器根据数据包的`Context-Type`来决定如何解析
 
-## 前端路由
+# 前端路由
 
 随着`ajax`的流行，异步数据请求交互在不刷新浏览器的情况下运行。而异步交互体验的高级版本就是SPA-单页应用。单页应用不仅仅是在页面交互是无刷新的，连页面跳转都是无刷新的，为了实现单页应用，所以就有了前端路由。类似于后端路由，前端路由就是匹配不同的url路径进行解析，然后动态渲染html内容。
 
-### hash模式
+## hash模式
 
 `https://www.xxx.com/#/hash`
 
@@ -34,7 +32,7 @@ window.onhashchange = e => {
 }
 ```
 
-### history模式
+## history模式
 
 `https://www.xxx.com/login`
 
@@ -42,7 +40,7 @@ window.onhashchange = e => {
 
 通过history api去掉了丑陋的`#`，但也存在问题：不怕前进/后退，就怕**刷新**。因为刷新是去请求服务器的，在`hash`下，前端路由修改的是#之后的内容，在发送请求时是不会带上的，但在history下可以自由地修改路径、参数，当刷新时，如果服务器中没有相应的响应或资源，容易爆`404`
 
-## vue-router核心原理
+# vue-router核心原理
 
 1. 通过`new VueRouter`中的`mode`参数来选择使用那种路由模式
 
@@ -72,7 +70,7 @@ window.onhashchange = e => {
 
 8. 实现`<router-link></router-link>`和`<router-view / >`两个组件
 
-## 总结
+# 总结
 
 `vue-router`以插件方式侵入`Vue`，从而支持一个额外的`router`属性，以提供监听并改变组件路由数据的能力，这样每次路由发生变化后，可以同步到数据，从而响应式地触发组件的更新
 

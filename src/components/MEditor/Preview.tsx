@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import ReactMarkdown from 'react-markdown';
 import {CalendarOutlined, FolderOutlined} from "@ant-design/icons/lib";
 import {Space} from "antd";
+import {connect} from "react-redux";
 
 import CodeBlock from './CodeBlock';
-import './preview.module.less'
-import '../../assets/less/md.theme.orange.less'
-import 'highlight.js/styles/a11y-dark.css'
-import style from './preview.module.less'
+import './preview.module.less';
+import 'highlight.js/styles/a11y-dark.css';
+import '../../assets/less/md.theme.orange.less';
+import style from './preview.module.less';
 import {AppState} from "../../store";
-import {connect} from "react-redux";
 
 interface PropsI {
   value: string;
@@ -23,10 +23,12 @@ const mapState2Props = (state: AppState) => ({
 
 const Header = (props: any) => {
   const { children, level } = props;
-  if (level === 1) return <h1>{ children[0]?.props?.value }</h1>;
+  const { value } = children[0]?.props
+  const _value = value?.replace(/[/.]/g, '')
+  if (level === 1) return <h1 id={_value}>{value}</h1>;
   return (
-    <h2>
-      <span>{ children[0]?.props?.value }</span>
+    <h2 id={_value}>
+      <span>{value}</span>
     </h2>
   )
 };

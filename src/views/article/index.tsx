@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactText, useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -14,10 +14,10 @@ function getTitle(_content: string) {
   const content = clone(_content);
   let tmp: ContentI = { title: '', level: 2, key: '', children: [] };
   content.replace(/```([\s\S][^```]*)```/g, '')
-    .replace(/(#+)[^#][^\n]*?(?:\n)/g, (match, m1) => {
+    .replace(/(#+) [^#][^\n]*?(?:\n)/g, (match, m1) => {
       const title = match.replace('\n', '')
         .replace(/[#*\][]/g, '')
-        .replace(/\([^)]*?\)/, '');
+        .replace(/\([^)]*?\)/, '').trim();
       const level = m1.length;
       const item = {
         title,
@@ -47,10 +47,16 @@ const Article = (props: PropsI) => {
       ARTICLE_MODULE.getArticleUpdateDate(props.match.params.title);
     });
   }, [props.match.params.title]);
+
+  function onContentClick(e: Array<ReactText>) {
+    const [title] = e;
+    const _title = String(title)?.replace(/[/.]/g, '');
+    document.querySelector(`#${_title}`)?.scrollIntoView({ behavior: 'smooth' });
+  }
   return (
     <div style={{ padding: 0, marginTop: 0, position: 'relative' }}>
       <MPreview value={md} fullscreen />
-      <MContent data={tableOfContent} />
+      <MContent data={tableOfContent} onContentClick={onContentClick} />
       <MGoTop referEle=".previewC" />
     </div>
   );
