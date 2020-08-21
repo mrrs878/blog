@@ -1,7 +1,8 @@
 {
-  "name": "blog",
+  "name": "@mrrs878/blog",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
+  "repository": "https://github.com/mrrs878/blog",
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
     "@antv/g2": "^4.0.12",
