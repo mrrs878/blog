@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  blog:
+    image: mrrs878/blog:latest
+    container_name: blog
+    ports:
+      - 8081:80
