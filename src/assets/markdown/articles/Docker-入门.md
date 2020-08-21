@@ -1,7 +1,7 @@
 ---
 title: Docker-入门
 date: 2020-8-10 22:16:00
-tags: Docker
+tags: Docker入门
 categories: Docker
 ---
 
@@ -52,3 +52,9 @@ docker container create --name blog -p 8081:80 mrrs878/blog:latest
 ```shell script
 docker container start xxx(container id)
 ```
+
+# docker-compose
+
+## service name和container name的关系
+
+如果`container_name`没有定义，运行`docker-cmpose up -d`后，docker-compose自动给container分配了一个名字，其格式为：`<当前工作路径名>/<servicename>_<sequencenumber>`
