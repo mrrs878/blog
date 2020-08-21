@@ -1,5 +1,6 @@
 ## 个人博客
 [![Build Status](https://www.travis-ci.org/mrrs878/blog.svg?branch=master)](https://www.travis-ci.org/mrrs878/blog)
+[![github](https://img.shields.io/npm/v/mrrs-dashboard-cli)](https://github.com/snowdreams1006)
 
 ## 优化
 
