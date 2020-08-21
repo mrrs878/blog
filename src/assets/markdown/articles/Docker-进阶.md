@@ -2,7 +2,7 @@
 title: Docker-进阶
 date: 2020-8-17 14:16:00
 tags: Docker优化
-categories: Docker删除
+categories: Docker
 ---
 
 # 打包优化
