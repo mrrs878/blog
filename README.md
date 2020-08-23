@@ -1,6 +1,5 @@
 ## 个人博客
 [![Build Status](https://www.travis-ci.org/mrrs878/blog.svg?branch=master)](https://www.travis-ci.org/mrrs878/blog)
-[![github](https://www.npmjs.com/package/@mrrs878/blog)](https://github.com/mrrs878/blog)
 ![GitHub top language](https://img.shields.io/github/languages/top/mrrs878/blog)
 
 ## 优化
