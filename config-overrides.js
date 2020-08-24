@@ -1,6 +1,7 @@
-const { override, fixBabelImports, addLessLoader, addWebpackAlias, addWebpackModuleRule } = require('customize-cra');
+const { override, fixBabelImports, addLessLoader, addWebpackAlias, addWebpackModuleRule, addWebpackPlugin } = require('customize-cra');
 const RawLoader = require('raw-loader');
 const path = require('path');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 function resolve(dir) {
   return path.join(__dirname, '.', dir)
 }
@@ -18,5 +19,6 @@ module.exports = override(
   addWebpackAlias({
     "@": resolve("src")
   }),
-  addWebpackModuleRule({test: /\.md$/, use: 'raw-loader'})
+  addWebpackModuleRule({test: /\.md$/, use: 'raw-loader'}),
+  addWebpackPlugin(new HardSourceWebpackPlugin())
 );

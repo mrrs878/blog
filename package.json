@@ -1,7 +1,8 @@
 {
-  "name": "blog",
+  "name": "@mrrs878/blog",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
+  "repository": "https://github.com/mrrs878/blog",
   "dependencies": {
     "@ant-design/icons": "^4.1.0",
     "@antv/g2": "^4.0.12",
@@ -69,6 +70,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
+    "hard-source-webpack-plugin": "^0.13.1",
     "http-proxy-middleware": "^1.0.4",
     "react-app-rewired": "^2.1.5",
     "ts-jest": "^25.5.1"
