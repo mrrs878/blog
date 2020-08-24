@@ -14,7 +14,13 @@ function App() {
     Promise.race([ARTICLE_MODULE.computeAllOverview()]).catch((e) => {
       console.log(e);
     });
-    worker.postMessage('test');
+    worker.postMessage('getLastCommit');
+    worker.postMessage('computeCommit');
+    worker.onmessage = async (e: MessageEvent) => {
+      const { type, data } = e.data;
+      if (type === 'compute') ARTICLE_MODULE.computeAllOverview(data);
+      if (type === 'last') ARTICLE_MODULE.computeAllOverview(data);
+    };
   }, []);
   return (
     <Provider store={store}>

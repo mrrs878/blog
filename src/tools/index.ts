@@ -21,3 +21,11 @@ export function getDataSetFromEventPath(eventPath: Array<HTMLElement>, elementCl
   const element = eventPath.find((item) => item?.classList?.contains(elementClass));
   return element?.dataset || {};
 }
+
+export function getLocalDate(zone: number, date: Date | string) {
+  const _date: Date = new Date(date);
+  const len = _date.getTime();
+  const offset = _date.getTimezoneOffset() * 60000;
+  const utcTime = len + offset;
+  return new Date(utcTime + 3600000 * zone);
+}

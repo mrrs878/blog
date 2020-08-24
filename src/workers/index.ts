@@ -37,11 +37,26 @@ async function worker() {
     });
   }
 
+  function _postMessage(data: any) {
+    // @ts-ignore
+    postMessage(data);
+  }
+
+  async function getLastCommit(type: string) {
+    try {
+      const data = await fetch('https://api.github.com/repos/mrrs878/blog/commits?page=1&per_page=1', 'GET');
+      _postMessage({ type, data });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   onmessage = async (e: MessageEvent) => {
-    console.log(e.data);
-    if (e.data === 'test') {
-      const res = await fetch('http://www.gmmsj.com/gmminf/tradeapi/config?src_code=11&app_version=0&app_channel=ios_browser&method=SearchGameList&params=%7B%22src_code%22:%2211%22,%22device_id%22:%22TvXk44v5e8vdXc967cMSS5FNrxVec2xT%22,%22system_deviceId%22:%22TvXk44v5e8vdXc967cMSS5FNrxVec2xT%22,%22search_type%22:0,%22size%22:99999%7D', 'GET');
-      console.log(res);
+    if (e.data === 'getLastCommit') {
+      getLastCommit('last');
+    }
+    if (e.data === 'computeCommit') {
+      setInterval(getLastCommit, 1000 * 60 * 5, 'compute');
     }
   };
 }

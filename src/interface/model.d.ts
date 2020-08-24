@@ -66,3 +66,13 @@ interface ArticleSubI {
   modifyTime?: string;
   watch?: number;
 }
+
+interface GithubCommitI {
+  commit: {
+    committer: {
+      name: string;
+      email: string;
+      date: string;
+    }
+  }
+}
