@@ -17,9 +17,6 @@ ajax.interceptors.response.use((response) => {
     localStorage.removeItem(MAIN_CONFIG.TOKEN_NAME);
   }
   return Promise.resolve(response.data);
-}, (error: Error) => {
-  console.log(error);
-  return Promise.resolve(error);
-});
+}, (error: Error) => Promise.resolve(error));
 
 export default ajax;

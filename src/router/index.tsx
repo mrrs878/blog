@@ -45,15 +45,15 @@ const Router = () => {
     <Suspense fallback={<MLoading />}>
       <Switch>
         {
-          ROUTES.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path}
-              exact={route.exact || true}
-              render={(): React.ReactNode => beforeEach(route)}
-            />
-          ))
-        }
+        ROUTES.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            exact={route.exact || true}
+            render={(): React.ReactNode => beforeEach(route)}
+          />
+        ))
+      }
       </Switch>
     </Suspense>
   );

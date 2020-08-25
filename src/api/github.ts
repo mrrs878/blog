@@ -10,5 +10,5 @@ export const GET_FILE_HISTORY = (data: GetFileHistoryReqI): Promise<LoginResI> =
 );
 
 export const GET_LAST_COMMIT = (): Promise<Array<GithubCommitI>> => ajax.get(
-  `${REPO_URL}/commits?page=1&per_page=1`,
+  `${REPO_URL}/commits1?page=1&per_page=1`,
 );

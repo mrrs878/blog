@@ -6,8 +6,12 @@ import './global.less';
 import MLayout from './layout';
 import ARTICLE_MODULE from './modules/article';
 import testWorker from './workers';
+import initMonitor from './tools/monitor';
+import MErrorBoundary from './components/MErrorBoundary';
 
 const worker = new Worker(testWorker);
+
+initMonitor({ reportUrl: 'http://localhost:3000/api/monitor' });
 
 function App() {
   useEffect(() => {
@@ -23,11 +27,13 @@ function App() {
     };
   }, []);
   return (
-    <Provider store={store}>
-      <div className="app">
-        <MLayout />
-      </div>
-    </Provider>
+    <MErrorBoundary>
+      <Provider store={store}>
+        <div className="app">
+          <MLayout />
+        </div>
+      </Provider>
+    </MErrorBoundary>
   );
 }
 

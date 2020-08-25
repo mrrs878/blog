@@ -10,6 +10,8 @@ import 'highlight.js/styles/a11y-dark.css';
 import '../../assets/less/md.theme.orange.less';
 import style from './preview.module.less';
 import {AppState} from "../../store";
+import MErrorBoundary from '../MErrorBoundary';
+import { GET_LAST_COMMIT } from '../../api/github';
 
 interface PropsI {
   value: string;
@@ -41,12 +43,15 @@ const Preview = (props: PropsI) => {
     const head = props.articleInfo.find(item => item.title === title[1])
       || { title: '', category: '', createTime: '', tag: '' };
     setFormattedMd({ head, content: src[2] });
+    GET_LAST_COMMIT()
+    throw new Error('i am a bug')
   }, [props.value, props.articleInfo]);
   useEffect(() => {
     document.title = formattedMd?.head?.title || 'my blog'
   }, [formattedMd]);
   return (
-    <div className={`container previewC`} id="write" style={{ display: 'block', overflow: "unset" }}>
+    <MErrorBoundary>
+      <div className={`container previewC`} id="write" style={{ display: 'block', overflow: "unset" }}>
       {
         formattedMd?.head.title && <div className={style.titleC}>
           <h1>{ formattedMd?.head?.title }</h1>
@@ -65,6 +70,7 @@ const Preview = (props: PropsI) => {
         }}
       />
     </div>
+    </MErrorBoundary>
   )
 };
 

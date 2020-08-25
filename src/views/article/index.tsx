@@ -39,13 +39,18 @@ const Article = (props: PropsI) => {
   const [md, setMD] = useState<string>('--- ---');
   const [tableOfContent, setTableOfContent] = useState<Array<ContentI>>([]);
   useEffect(() => {
+    let mounted = true;
     const title = props.match.params.title.trimStart();
     import(`../../assets/markdown/articles/${title}.md`).then((res) => {
       const content = getTitle(res.default);
+      if (!mounted) return;
       setTableOfContent(content);
       setMD(res.default);
       ARTICLE_MODULE.getArticleUpdateDate(props.match.params.title);
     });
+    return () => {
+      mounted = false;
+    };
   }, [props.match.params.title]);
 
   function onContentClick(e: Array<ReactText>) {
