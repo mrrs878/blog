@@ -10,14 +10,25 @@ interface JSRunTimeErrorEventI {
   error?: Error;
 }
 
-type EventT = JSRunTimeErrorEventI | PromiseRejectionEvent | ErrorEvent | XMLHttpRequest;
+interface AjaxErrorEventI {
+  response: string;
+  responseText: string;
+  responseType: string;
+  responseURL: string;
+  responseXML: string;
+  status: number;
+  method: string;
+  url: string;
+}
+
+type EventT = JSRunTimeErrorEventI | PromiseRejectionEvent | AjaxErrorEventI | ErrorEvent | XMLHttpRequest;
 
 const config: ConfigI = { reportUrl: '/' };
 
 function report(event: EventT) {
-  // const image = new Image();
-  // image.src = `${config.reportUrl}/111`;
-  navigator.sendBeacon(`${config.reportUrl}`, JSON.stringify(event));
+  const image = new Image();
+  image.src = `${config.reportUrl}?error=${JSON.stringify(event)}`;
+  // navigator.sendBeacon(`${config.reportUrl}`, JSON.stringify(event));
 }
 
 // js运行时异常
@@ -59,11 +70,13 @@ function ajaxError() {
   const xmlReq = window.XMLHttpRequest;
   const oldSend = xmlReq.prototype.send;
   const oldOpen = xmlReq.prototype.open;
+  const oldArgs = { method: '', url: '' };
   function handleEvent(event: any) {
     try {
       if (event && event.currentTarget && event.currentTarget.status !== 200) {
-        console.log('ajaxError', event.currentTarget);
-        report(event.currentTarget);
+        const { response, responseText, responseType, responseURL, responseXML, status } = event.currentTarget;
+        console.log('ajaxError', JSON.stringify({ response, responseText, responseType, responseURL, responseXML, status, ...oldArgs }));
+        report({ response, responseText, responseType, responseURL, responseXML, status, ...oldArgs });
       }
     } catch (e) {
       console.log(`Tool's error: ${e}`);
@@ -76,8 +89,9 @@ function ajaxError() {
     return oldSend.apply(this, args);
   };
   xmlReq.prototype.open = function (...args: any) {
+    const [method, url] = args;
+    Object.assign(oldArgs, { method, url });
     oldOpen.apply(this, args);
-    // this.ajaxUrl = url;
   };
 }
 
