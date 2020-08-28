@@ -10,42 +10,49 @@ interface JSRunTimeErrorEventI {
   error?: Error;
 }
 
+interface AssetsErrorI extends ErrorEvent {}
+
 interface AjaxErrorEventI {
   response: string;
-  responseText: string;
-  responseType: string;
-  responseURL: string;
-  responseXML: string;
   status: number;
   method: string;
   url: string;
 }
 
-type EventT = JSRunTimeErrorEventI | PromiseRejectionEvent | AjaxErrorEventI | ErrorEvent | XMLHttpRequest;
-
 const config: ConfigI = { reportUrl: '/' };
 
-function report(event: EventT) {
-  const image = new Image();
-  image.src = `${config.reportUrl}?error=${JSON.stringify(event)}`;
-  // navigator.sendBeacon(`${config.reportUrl}`, JSON.stringify(event));
+const formater = {
+  JSRunTimeErrorEventI<T>(error: T) {},
+  PromiseRejectionEvent<T>(error: T) {},
+  AssetsErrorI<T>(error: T) {},
+  AjaxErrorEventI<T>(error: T) {},
+};
+
+function report<T>(data: { type: 'JSRunTimeErrorEventI' | 'PromiseRejectionEvent' | 'AssetsErrorI' | 'AjaxErrorEventI'; info: T }) {
+  // const image = new Image();
+  // image.src = `${config.reportUrl}?error=${JSON.stringify(event)}`;
+  console.log(data.type);
+  const formattedInfo = formater[data.type]<T>(data.info);
+  console.log(formattedInfo);
+  
 }
 
 // js运行时异常
 function syncAndAsyncError() {
   window.onerror = function (event, source, lineno, colno, error) {
     console.log('syncAndAsyncError', { event, source, lineno, colno, error });
-    report({ event, source, error, lineno, colno });
+    console.log(JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+
+    report<JSRunTimeErrorEventI>({ type: 'JSRunTimeErrorEventI', info: { event, source, error, lineno, colno } });
     return true;
   };
 }
 
 // Promise异常
 function promiseError() {
-  window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
-    e.preventDefault();
-    console.log('promiseError', e);
-    report(e);
+  window.addEventListener('unhandledrejection', (error: PromiseRejectionEvent) => {
+    error.preventDefault();
+    report<PromiseRejectionEvent>({ type: 'PromiseRejectionEvent', info: error });
     return true;
   }, true);
 }
@@ -57,7 +64,7 @@ function assetsError() {
     const isElementTarget = target instanceof HTMLScriptElement || target instanceof HTMLLinkElement || target instanceof HTMLImageElement;
     if (!isElementTarget) return false;
     console.log('assetsError', e);
-    report(e);
+    report<AssetsErrorI>({ type: 'AssetsErrorI', info: e });
     return true;
   }, true);
 }
@@ -74,9 +81,9 @@ function ajaxError() {
   function handleEvent(event: any) {
     try {
       if (event && event.currentTarget && event.currentTarget.status !== 200) {
-        const { response, responseText, responseType, responseURL, responseXML, status } = event.currentTarget;
-        console.log('ajaxError', JSON.stringify({ response, responseText, responseType, responseURL, responseXML, status, ...oldArgs }));
-        report({ response, responseText, responseType, responseURL, responseXML, status, ...oldArgs });
+        const { response, status } = event.currentTarget;
+        const { method, url } = oldArgs;
+        report<AjaxErrorEventI>({ type: 'AjaxErrorEventI', info: { response: JSON.parse(response), status, method, url } });
       }
     } catch (e) {
       console.log(`Tool's error: ${e}`);
