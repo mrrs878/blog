@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-08-24 18:55:48
+ * @LastEditTime: 2020-08-31 18:34:51
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \blog\src\modules\article.ts
+ */
 import { sortBy } from 'ramda';
 import store, { actions } from '../store';
 import { GET_FILE_HISTORY, GET_LAST_COMMIT } from '../api/github';

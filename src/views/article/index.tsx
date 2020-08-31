@@ -5,7 +5,6 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import MPreview from '../../components/MEditor/Preview';
 import MContent from '../../components/MContent';
 import MGoTop from '../../components/MGoTop';
-import ARTICLE_MODULE from '../../modules/article';
 
 interface PropsI extends RouteComponentProps<{ title: string }>{}
 
@@ -46,7 +45,6 @@ const Article = (props: PropsI) => {
       if (!mounted) return;
       setTableOfContent(content);
       setMD(res.default);
-      ARTICLE_MODULE.getArticleUpdateDate(props.match.params.title);
     });
     return () => {
       mounted = false;

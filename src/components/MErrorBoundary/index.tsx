@@ -7,6 +7,7 @@ class MErrorBoundary extends React.Component<any, any> {
   }
 
   static getDerivedStateFromError() {
+    console.log('MErrorBoundary');
     return { hasError: true };
   }
 
