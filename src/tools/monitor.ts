@@ -2,20 +2,28 @@ interface ConfigI {
   reportUrl: string;
 }
 
-interface JSRunTimeErrorEventI {
-  event: Event | string;
-  message?: string;
-  stack?: string;
-  lineno?: number;
-  colno?: number;
+interface BaseinfoI {
+  title: string;
+  location: string;
+  message: string;
+  kind: string;
+  type: string;
+  errorType: string;
 }
 
-interface AssetsErrorI {
+interface JSRunTimeErrorEventI extends BaseinfoI {
+  filename: string;
+  position: string;
+  stack: string;
+  selector: string;
+}
+
+interface AssetsErrorI extends BaseinfoI {
   url: string;
   nodeName: string;
 }
 
-interface AjaxErrorEventI {
+interface AjaxErrorEventI extends BaseinfoI {
   response: string;
   status: number;
   method: string;
@@ -30,19 +38,37 @@ interface PromiseErrorT {
 
 const config: ConfigI = { reportUrl: '/' };
 
-function report<T>(data: { type: 'JSRunTimeErrorI' | 'PromiseErrorT' | 'AssetsErrorI' | 'AjaxErrorEventI'; info: T }) {
-  const image = new Image();
-  const _data = { ...data, title: document.title, location: window.location.href };
-  image.src = `${config.reportUrl}?error=${JSON.stringify(_data)}`;
+function getLastEvent(): undefined | Event {
+  let lastEvent;
+  ['click', 'touchstart', 'mousedown', 'keydown', 'mouseover'].forEach((eventType) => document.addEventListener(eventType, (event) => {
+    lastEvent = event;
+  }, {
+    capture: true,
+    passive: true,
+  }));
+  return lastEvent;
 }
 
-// js运行时异常
-function syncAndAsyncError() {
-  window.onerror = function (event, source, lineno, colno, error) {
-    const { message, stack } = error || {};
-    report<JSRunTimeErrorEventI>({ type: 'JSRunTimeErrorI', info: { event, message, stack, lineno, colno } });
-    return true;
+function getSelector(path: Array<EventTarget>) {
+  return '';
+}
+
+function report<T>(data: { type: 'JSRunTimeErrorI' | 'PromiseErrorT' | 'AssetsErrorI' | 'AjaxErrorEventI'; info: T }) {
+  const image = new Image();
+  image.src = `${config.reportUrl}?error=${JSON.stringify(data.info)}`;
+}
+
+function getCommonInfoFromEvent(event?: Event) {
+  return {
+    title: document.title.replace(/&/, ''),
+    location: window.location.href.replace(/&/, ''),
+    kind: 'stability',
+    type: 'error',
   };
+}
+
+function getLines(stack: string | undefined) {
+  return stack?.split('\n').slice(1).map((item) => item.replace(/^\s+at\s+/g, '')).join('') || '';
 }
 
 // Promise异常
@@ -56,29 +82,49 @@ function promiseError() {
       message = event.message;
       stack = event.stack || '';
     }
+    console.log(event);
+
     report<PromiseErrorT>({ type: 'PromiseErrorT', info: { message, stack, event } });
     return true;
   }, true);
 }
 
-// 静态资源加载异常
+// 静态资源加载异常&JSRuntime异常
 function assetsError() {
-  window.addEventListener('error', (event: Event) => {
+  window.addEventListener('error', (event: ErrorEvent) => {
     const { target } = event;
+    console.log(event);
     const isElementTarget = target instanceof HTMLScriptElement || target instanceof HTMLLinkElement || target instanceof HTMLImageElement;
-    if (!isElementTarget) return false;
-    let url = '';
-    let nodeName = '';
-    if (target instanceof HTMLImageElement || target instanceof HTMLScriptElement) {
-      url = target.src;
-      nodeName = target.nodeName;
-    }
-    if (target instanceof HTMLLinkElement) {
-      url = target.href;
-      nodeName = target.nodeName;
-    }
+    if (!isElementTarget) {
+      const { message, filename, lineno, colno, error } = event;
+      const position = `${lineno}:${colno}`;
+      const stack = getLines(error instanceof Error ? error.stack : '');
+      const lastEvent = getLastEvent();
+      const selector = lastEvent ? getSelector(lastEvent.composedPath()) : '';
+      report<JSRunTimeErrorEventI>({
+        type: 'JSRunTimeErrorI',
+        info: { ...getCommonInfoFromEvent(), message, errorType: 'jsError', filename, position, stack, selector },
+      });
+    } else {
+      let url = '';
+      let nodeName = '';
+      if (target instanceof HTMLImageElement || target instanceof HTMLScriptElement) {
+        url = target.src;
+        nodeName = target.nodeName;
+      }
+      if (target instanceof HTMLLinkElement) {
+        url = target.href;
+        nodeName = target.nodeName;
+      }
 
-    report<AssetsErrorI>({ type: 'AssetsErrorI', info: { url, nodeName } });
+      report<AssetsErrorI>({ type: 'AssetsErrorI',
+        info: {
+          url,
+          errorType: 'AjaxError',
+          nodeName,
+          message: '',
+          ...getCommonInfoFromEvent() } });
+    }
     return true;
   }, true);
 }
@@ -95,9 +141,22 @@ function ajaxError() {
   function handleEvent(event: any) {
     try {
       if (event && event.currentTarget && event.currentTarget.status !== 200) {
-        const { response, status } = event.currentTarget;
+        const { response, status, statusText } = event.currentTarget;
         const { method, url } = oldArgs;
-        report<AjaxErrorEventI>({ type: 'AjaxErrorEventI', info: { response: JSON.parse(response), status, method, url } });
+        console.log(event);
+
+        report<AjaxErrorEventI>({
+          type: 'AjaxErrorEventI',
+          info: {
+            response: JSON.parse(response),
+            status,
+            method,
+            url,
+            message: statusText,
+            errorType: 'AjaxError',
+            ...getCommonInfoFromEvent(),
+          },
+        });
       }
     } catch (e) {
       console.log(`Tool's error: ${e}`);
@@ -118,7 +177,6 @@ function ajaxError() {
 
 function init(_config: ConfigI) {
   Object.assign(config, _config);
-  syncAndAsyncError();
   promiseError();
   assetsError();
   ajaxError();
