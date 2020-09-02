@@ -11,7 +11,9 @@ import MErrorBoundary from './components/MErrorBoundary';
 
 const worker = new Worker(testWorker);
 
-initMonitor({ reportUrl: 'http://localhost:3000/api/monitor' });
+initMonitor({ reportUrl: process.env.NODE_ENV === 'development'
+  ? '/'
+  : 'http://mrrs878-monitor.cn-qingdao.log.aliyuncs.com/logstores/monitor/track.gif?APIVersion=0.6.0' });
 
 function App() {
   useEffect(() => {

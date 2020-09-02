@@ -13,6 +13,7 @@ hljs.registerLanguage('js', javascript);
 hljs.registerLanguage('jsx', javascript);
 hljs.registerLanguage('html', html);
 hljs.registerLanguage('ts', ts);
+hljs.registerLanguage('tsx', ts);
 hljs.registerLanguage('typescript', ts);
 hljs.registerLanguage('shell script', shell);
 hljs.registerLanguage('shell', shell);

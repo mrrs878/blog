@@ -1,3 +1,5 @@
+import userAgent from 'useragent';
+
 interface ConfigI {
   reportUrl: string;
 }
@@ -9,6 +11,8 @@ interface BaseinfoI {
   kind: string;
   type: string;
   errorType: string;
+  os: string;
+  device: string;
 }
 
 interface JSRunTimeErrorEventI extends BaseinfoI {
@@ -30,10 +34,9 @@ interface AjaxErrorEventI extends BaseinfoI {
   url: string;
 }
 
-interface PromiseErrorT {
+interface PromiseErrorI extends BaseinfoI {
   message: string;
   stack: string;
-  event: PromiseRejectionEvent;
 }
 
 const config: ConfigI = { reportUrl: '/' };
@@ -55,15 +58,18 @@ function getSelector(path: Array<EventTarget>) {
 
 function report<T>(data: { type: 'JSRunTimeErrorI' | 'PromiseErrorT' | 'AssetsErrorI' | 'AjaxErrorEventI'; info: T }) {
   const image = new Image();
-  image.src = `${config.reportUrl}?error=${JSON.stringify(data.info)}`;
+  image.src = `${config.reportUrl}${process.env.NODE_ENV === 'development' ? '?error=' : '&error='}${JSON.stringify(data.info)}`;
 }
 
-function getCommonInfoFromEvent(event?: Event) {
+function getCommonInfo() {
+  const { device, os } = userAgent.parse();
   return {
     title: document.title.replace(/&/, ''),
     location: window.location.href.replace(/&/, ''),
     kind: 'stability',
     type: 'error',
+    device: device.toString(),
+    os: os.toString(),
   };
 }
 
@@ -78,13 +84,13 @@ function promiseError() {
     let message = '';
     let stack = '';
     message = event.reason;
-    if (event instanceof Error) {
-      message = event.message;
-      stack = event.stack || '';
+    const { reason } = event;
+    if (reason instanceof Error) {
+      message = reason.message;
+      stack = getLines(reason.stack);
     }
-    console.log(event);
 
-    report<PromiseErrorT>({ type: 'PromiseErrorT', info: { message, stack, event } });
+    report<PromiseErrorI>({ type: 'PromiseErrorT', info: { errorType: event.type, message, stack, ...getCommonInfo() } });
     return true;
   }, true);
 }
@@ -96,14 +102,14 @@ function assetsError() {
     console.log(event);
     const isElementTarget = target instanceof HTMLScriptElement || target instanceof HTMLLinkElement || target instanceof HTMLImageElement;
     if (!isElementTarget) {
-      const { message, filename, lineno, colno, error } = event;
+      const { message, filename, lineno, colno, error, type } = event;
       const position = `${lineno}:${colno}`;
       const stack = getLines(error instanceof Error ? error.stack : '');
       const lastEvent = getLastEvent();
       const selector = lastEvent ? getSelector(lastEvent.composedPath()) : '';
       report<JSRunTimeErrorEventI>({
         type: 'JSRunTimeErrorI',
-        info: { ...getCommonInfoFromEvent(), message, errorType: 'jsError', filename, position, stack, selector },
+        info: { ...getCommonInfo(), message, errorType: type, filename, position, stack, selector },
       });
     } else {
       let url = '';
@@ -120,10 +126,10 @@ function assetsError() {
       report<AssetsErrorI>({ type: 'AssetsErrorI',
         info: {
           url,
-          errorType: 'AjaxError',
+          errorType: event.type,
           nodeName,
           message: '',
-          ...getCommonInfoFromEvent() } });
+          ...getCommonInfo() } });
     }
     return true;
   }, true);
@@ -153,8 +159,8 @@ function ajaxError() {
             method,
             url,
             message: statusText,
-            errorType: 'AjaxError',
-            ...getCommonInfoFromEvent(),
+            errorType: event.type,
+            ...getCommonInfo(),
           },
         });
       }
