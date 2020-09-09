@@ -43,3 +43,7 @@ const [count, setCount] = useState(() => calState())
 # hook使用必须要遵循的规则
 
 在函数值组件主体内（指React渲染阶段）改变`DOM`、添加订阅、设置定时器、记录日志以及执行其他包含副作用的操作都是不被允许的，因为这可能会产生莫名其妙的bug并破坏UI的一致性。使用`useEffect`完成副作用操作赋值给`useEffect`的函数会在组件渲染到屏幕后执行。
+
+# useRef
+
+通过`useRef`来拥有一个在**所有帧**中**共享**的变量

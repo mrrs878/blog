@@ -1,21 +1,8 @@
----
-title: React.js学习-自定义hook
-date: 2020-09-03 09:23:54
-tags: React.js学习 hook
-categories: React.js
----
+import { useEffect, useState, useCallback } from 'react';
 
-# 自定义hook的好处
-
-可以把组件逻辑抽到**可复用**的方法里
-
-# useRequest
-
-```ts
 function useRequest<T, P>(api: (params: P) => Promise<T>, params: P, visible = true) {
   const [res, setRes] = useState({});
   const [loading, setLoading] = useState(false);
-  // 使用useState包裹params防止死循环
   const [newParams, setNewParams] = useState(params);
 
   const fetch = useCallback(async () => {
@@ -38,11 +25,7 @@ function useRequest<T, P>(api: (params: P) => Promise<T>, params: P, visible = t
   const reFetch = () => {
     setNewParams({ ...newParams });
   };
-  // 返回数组方便重命名
   return [loading, res, doFetch, reFetch];
 }
-```
 
-# Ref: 
-
-[React Hook 系列（二）：自定义hook的一些实践](https://juejin.im/post/6844904021984018439)
+export default useRequest;
