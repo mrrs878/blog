@@ -1,7 +1,7 @@
 ---
-title: React.js练习-图片懒加载（高阶组件实现）
+title: React.js学习-图片懒加载（高阶组件实现）
 date: 2020-05-12 23:03:54
-tags: React.js练习 HOC
+tags: React.js学习 HOC
 categories: React.js
 ---
 

@@ -27,7 +27,9 @@ categories: React.js
 
 # useCallback和useMemo
 
-`useCallback(fn, deps) == useMemo(() => fn(), deps)`
+``` js
+useCallback(fn, deps) == useMemo(() => fn(), deps)
+```
 
 # 使用过多hook后性能问题
 
