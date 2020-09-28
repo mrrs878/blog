@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2020-08-24 18:55:48
- * @LastEditTime: 2020-08-31 18:34:51
- * @LastEditors: your name
+ * @LastEditTime: 2020-09-28 10:00:05
+ * @LastEditors: mrrs878
  * @Description: In User Settings Edit
  * @FilePath: \blog\src\modules\article.ts
  */
@@ -10,6 +10,7 @@ import { sortBy } from 'ramda';
 import store, { actions } from '../store';
 import { GET_FILE_HISTORY, GET_LAST_COMMIT } from '../api/github';
 import { getLocalDate } from '../tools';
+import { GET_ARTICLE, GET_ARTICLES } from '../api/article';
 
 const ARTICLE_MODULE = {
   async computeAllOverview(lastCommit: Array<GithubCommitI> = [], size?: number): Promise<Array<ArticleSubI>> {
@@ -53,7 +54,7 @@ const ARTICLE_MODULE = {
             ?.slice(0, 200);
           totalWord += res?.default.length || 0;
           const [title, createTime, tag, category] = info.slice(1, 5).map((infoItem: string) => infoItem.trimStart());
-          articleInfo.push({ title, createTime, tag, category, description });
+          articleInfo.push({ title, createTime, tag, categories: category, description });
         });
       });
       setTimeout(() => {
@@ -71,6 +72,16 @@ const ARTICLE_MODULE = {
   async getRepoLastCommit() {
     const res = await GET_LAST_COMMIT();
     this.computeAllOverview(res);
+  },
+  async getAllArticles() {
+    const res = await GET_ARTICLES();
+    console.log(res);
+
+    store.dispatch({ type: actions.UPDATE_ARTICLE_INFO, data: res.data });
+  },
+  async GET_ARTICLES(data: GetArticleReqI) {
+    const res = await GET_ARTICLE(data);
+    return res.data;
   },
 };
 

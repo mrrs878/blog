@@ -58,12 +58,13 @@ interface ContentI {
 }
 
 interface ArticleSubI {
+  _id?: string;
   title: string;
   description?: string;
-  category: string;
+  categories: string;
   tag: string;
   createTime: string;
-  modifyTime?: string;
+  updateTime?: string;
   watch?: number;
 }
 

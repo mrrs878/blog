@@ -18,7 +18,7 @@ const Category = (props: PropsI) => {
   const [categories, setCategories] = useState<DynamicObjectKey<number>>({});
   useEffect(() => {
     const res: DynamicObjectKey<number> = {};
-    props.articleInfo.map((item) => item.category).forEach((item) => {
+    props.articleInfo.map((item) => item.categories).forEach((item) => {
       res[item] = res[item] ? res[item] + 1 : 1;
     });
     setCategories(res);

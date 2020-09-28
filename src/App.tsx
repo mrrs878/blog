@@ -17,15 +17,15 @@ initMonitor({ reportUrl: process.env.NODE_ENV === 'development'
 
 function App() {
   useEffect(() => {
-    Promise.race([ARTICLE_MODULE.computeAllOverview()]).catch((e) => {
+    Promise.race([ARTICLE_MODULE.getAllArticles()]).catch((e) => {
       console.log(e);
     });
     worker.postMessage('getLastCommit');
     worker.postMessage('computeCommit');
     worker.onmessage = async (e: MessageEvent) => {
-      const { type, data } = e.data;
-      if (type === 'compute') ARTICLE_MODULE.computeAllOverview(data);
-      if (type === 'last') ARTICLE_MODULE.computeAllOverview(data);
+      // const { type, data } = e.data;
+      // if (type === 'compute') ARTICLE_MODULE.computeAllOverview(data);
+      // if (type === 'last') ARTICLE_MODULE.computeAllOverview(data);
     };
   }, []);
   return (

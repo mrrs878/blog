@@ -23,13 +23,13 @@ const handlerTag = new Chain((path: string, keywords: string, src: Array<Article
 });
 const handlerCat = new Chain((path: string, keywords: string, src: Array<ArticleSubI>) => {
   if (path.match(/cat/g)) {
-    return src.filter((item) => item.category.includes(keywords));
+    return src.filter((item) => item.categories.includes(keywords));
   }
   return NEXT_SUCCESSOR;
 });
 const handleSearch = new Chain((path: string, keywords: string, src: Array<ArticleSubI>) => {
   const reg = new RegExp(keywords, 'ig');
-  return (keywords ? src.filter((item) => item.title.match(reg) || item.tag.match(reg) || item.category.match(reg)) : src);
+  return (keywords ? src.filter((item) => item.title.match(reg) || item.tag.match(reg) || item.categories.match(reg)) : src);
 });
 handlerTag.setNextSuccessor(handlerCat);
 handlerCat.setNextSuccessor(handleSearch);
@@ -48,13 +48,14 @@ const Index: React.FC<PropsI> = (props: PropsI) => {
       {
         articles.map((item) => (
           <MOverview
+            _id={item._id}
             key={item.title}
             title={item.title}
             description={item.description}
-            category={item.category}
+            categories={item.categories}
             tag={item.tag}
             createTime={item.createTime}
-            modifyTime="2020/8/6 10:00"
+            updateTime={item.updateTime}
             watch={0}
           />
         ))

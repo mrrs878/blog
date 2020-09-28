@@ -40,7 +40,7 @@ const Preview = (props: PropsI) => {
     const src = props.value.split('---');
     const title = src[1].match(/title: (.+)/) || '';
     const head = props.articleInfo.find(item => item.title === title[1])
-      || { title: '', category: '', createTime: '', tag: '' };
+      || { title: '', categories: '', createTime: '', tag: '' };
     setFormattedMd({ head, content: src[2] });
   }, [props.value, props.articleInfo]);
   useEffect(() => {
@@ -54,8 +54,8 @@ const Preview = (props: PropsI) => {
           <h1>{ formattedMd?.head?.title }</h1>
           <Space style={{ color: '#999' }}>
             { formattedMd?.head?.createTime && <span><CalendarOutlined /> 创建于{ formattedMd?.head?.createTime }</span> }
-            { formattedMd?.head?.modifyTime && <span>更新于{ formattedMd?.head?.modifyTime }</span>}
-            { formattedMd?.head?.category && <span><FolderOutlined /> 分类于<a href={`/all/category/${formattedMd?.head?.category}`}>{ formattedMd?.head?.category }</a></span> }
+            { formattedMd?.head?.updateTime && <span>更新于{ formattedMd?.head?.updateTime }</span>}
+            { formattedMd?.head?.categories && <span><FolderOutlined /> 分类于<a href={`/all/category/${formattedMd?.head?.categories}`}>{ formattedMd?.head?.categories }</a></span> }
           </Space>
         </div>
       }

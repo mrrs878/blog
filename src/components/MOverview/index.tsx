@@ -1,3 +1,7 @@
+/*
+ * @Author: mrrs878
+ * @LastEditors: mrrs878
+ */
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { CalendarOutlined, CarryOutOutlined, EyeOutlined, FolderOutlined, TagOutlined } from '@ant-design/icons';
@@ -8,7 +12,7 @@ interface PropsI extends ArticleSubI, RouteComponentProps{
 }
 
 const MOverview = (props: PropsI) => (
-  <div className={style.item} onClick={() => props.history.push(`/article/${props.title}`)}>
+  <div className={style.item} onClick={() => props.history.push(`/article/${props._id}`)}>
     <div className={style.itemTitle}>{ props.title }</div>
     <div className={style.itemContent}>
       { props.description }
@@ -18,7 +22,7 @@ const MOverview = (props: PropsI) => (
         <FolderOutlined style={{ color: '#40a9ff' }} />
         <span className={style.itemFooterHC}>
           ：
-          { props.category }
+          { props.categories }
         </span>
       </span>
       <span>
@@ -36,7 +40,7 @@ const MOverview = (props: PropsI) => (
       <span>
         <CarryOutOutlined />
         ：
-        --
+        { props.updateTime || '--' }
       </span>
       <span>
         <EyeOutlined />
