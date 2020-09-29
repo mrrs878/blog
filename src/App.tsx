@@ -23,7 +23,7 @@ function App() {
     worker.postMessage('getLastCommit');
     worker.postMessage('computeCommit');
     worker.onmessage = async (e: MessageEvent) => {
-      // const { type, data } = e.data;
+      // const { type, data } = e.data
       // if (type === 'compute') ARTICLE_MODULE.computeAllOverview(data);
       // if (type === 'last') ARTICLE_MODULE.computeAllOverview(data);
     };
