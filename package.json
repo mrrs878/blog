@@ -80,7 +80,7 @@
   "scripts": {
     "start": "dotenv -e .env.development react-app-rewired start",
     "build:prod": "dotenv -e .env.production react-app-rewired build",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "eject": "react-app-rewired eject"
   },
   "eslintConfig": {

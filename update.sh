@@ -1,7 +1,16 @@
 #!/bin/bash
 
-echo "pulling image..."
-docker-compose pull
+echo "updating code..."
+git pull
+
+echo "installing packages..."
+yarn install
+
+echo "building..."
+yarn build:prod
+
+echo "building image..."
+docker build -t mrrs878/blog:latest .
 
 echo "stoping app..."
 docker-compose down
