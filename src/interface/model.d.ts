@@ -78,3 +78,13 @@ interface GithubCommitI {
     }
   }
 }
+
+interface CommentI {
+  name: string;
+  content: string;
+  user_id: string;
+  article_id: string;
+  _id: string;
+  createTime: string;
+  avatar?: string;
+}

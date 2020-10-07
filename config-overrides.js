@@ -13,6 +13,6 @@ module.exports = override(
     javascriptEnabled: true
   }),
   addWebpackModuleRule({test: /\.md$/, use: 'raw-loader'}),
-  addWebpackPlugin(new HardSourceWebpackPlugin()),
+  // addWebpackPlugin(new HardSourceWebpackPlugin()),
   addWebpackPlugin(new webpack.optimize.ModuleConcatenationPlugin())
 );

@@ -1,7 +1,7 @@
 interface BaseResI<T> {
   success: boolean;
   code: number;
-  data: T;
+  data: T;s
   msg: string;
 }
 
@@ -30,3 +30,9 @@ interface GetArticleResI extends BaseResI<ArticleI>{
 }
 
 interface GetUserInfoResI extends BaseResI<UserI> {}
+
+interface GetCommentsResI extends BaseResI<Array<CommentI>> {}
+
+interface GetCommentResI extends BaseResI<CommentI> {}
+
+interface AddCommentResI extends BaseResI<CommentI> {}

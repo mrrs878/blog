@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 
 function useRequest<P, T>(api: (params: P) => Promise<T>, params?: P|undefined, visiable = true)
-  :[boolean, T|undefined, Function, Function] {
+  :[boolean, T|undefined, (params?: P) => any, Function] {
   const [res, setRes] = useState<T>();
   const [loading, setLoading] = useState(() => false);
   const [newParams, setNewParams] = useState<P|undefined>(() => params);

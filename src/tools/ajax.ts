@@ -12,7 +12,7 @@ ajax.interceptors.request.use((config) => {
   return tmp;
 });
 ajax.interceptors.response.use(async (response) => {
-  if ([401, 403].includes(response.data.code)) {
+  if ([401].includes(response.data.code)) {
     localStorage.removeItem(MAIN_CONFIG.TOKEN_NAME);
     // await message.error('登录信息失效');
     // window.location.href = '/auth/login';

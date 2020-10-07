@@ -6,3 +6,5 @@ export const UPDATE_TOTAL_WORD = 'UPDATE_TOTAL_WORD';
 export type UPDATE_TOTAL_WORD = typeof UPDATE_TOTAL_WORD;
 export const UPDATE_USER = 'UPDATE_USER';
 export type UPDATE_USER = typeof UPDATE_USER;
+export const UPDATE_COMMENTS = 'UPDATE_COMMENTS';
+export type UPDATE_COMMENTS = typeof UPDATE_COMMENTS;
