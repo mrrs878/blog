@@ -6,7 +6,7 @@
 */
 
 import { Layout } from 'antd';
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import MMenu from '../components/MMenu';
@@ -17,7 +17,7 @@ import MFooter from '../components/MFooter';
 const { Content, Sider } = Layout;
 
 const MLayout = () => {
-  const [isFullScreen, setFullScreen] = useState(window.location.href.match(/login/));
+  const [isFullScreen] = useState(window.location.href.match(/login/));
 
   return (
     <BrowserRouter>
