@@ -56,6 +56,7 @@ const Index: React.FC<PropsI> = (props: PropsI) => {
             tag={item.tag}
             createTime={item.createTime}
             updateTime={item.updateTime}
+            author={item.author}
             watch={0}
           />
         ))

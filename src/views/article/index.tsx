@@ -6,6 +6,7 @@ import MPreview from '../../components/MEditor/Preview';
 import MContent from '../../components/MContent';
 import MGoTop from '../../components/MGoTop';
 import { GET_ARTICLE } from '../../api/article';
+import MComment from '../../components/MComment';
 
 interface PropsI extends RouteComponentProps<{ title: string }>{}
 
@@ -36,6 +37,7 @@ const Article = (props: PropsI) => {
     <div style={{ padding: 0, marginTop: 0, position: 'relative' }}>
       <MPreview value={md} fullscreen />
       <MContent data={tableOfContent} onContentClick={onContentClick} />
+      <MComment />
       <MGoTop referEle=".previewC" />
     </div>
   );

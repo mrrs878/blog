@@ -6,7 +6,7 @@
 */
 
 import { Layout } from 'antd';
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import MMenu from '../components/MMenu';
@@ -16,22 +16,39 @@ import MFooter from '../components/MFooter';
 
 const { Content, Sider } = Layout;
 
-const MLayout = () => (
-  <BrowserRouter>
-    <Layout>
-      <Sider theme="light">
-        <MMenu />
-      </Sider>
-      <Content>
-        <div className="content">
+const MLayout = () => {
+  const [isFullScreen, setFullScreen] = useState(window.location.href.match(/login/));
+
+  return (
+    <BrowserRouter>
+      {
+        isFullScreen && (
           <Suspense fallback={<MLoading />}>
             <Router />
           </Suspense>
-        </div>
-      </Content>
-    </Layout>
-    <MFooter />
-  </BrowserRouter>
-);
+        )
+      }
+      {
+        !isFullScreen && (
+          <div className="app">
+            <Layout>
+              <Sider theme="light">
+                <MMenu />
+              </Sider>
+              <Content>
+                <div className="content">
+                  <Suspense fallback={<MLoading />}>
+                    <Router />
+                  </Suspense>
+                </div>
+              </Content>
+            </Layout>
+            <MFooter />
+          </div>
+        )
+      }
+    </BrowserRouter>
+  );
+};
 
 export default MLayout;

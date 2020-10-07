@@ -15,6 +15,9 @@ import { ALL_ROUTES, ALL_ROUTES_MAP } from './allRoutes';
 import { CATEGORY_ROUTES, CATEGORY_ROUTES_MAP } from './categoryRoutes';
 import { TAG_ROUTES, TAG_ROUTES_MAP } from './tagRoutes';
 import { ARTICLE_ROUTES, ARTICLE_ROUTES_MAP } from './articleRoutes';
+import Chain, { NEXT_SUCCESSOR } from '../tools/Chain';
+import MAIN_CONFIG from '../config';
+import { AUTH_ROUTES_MAP, AUTH_ROUTES } from './authRoutes';
 
 const ROUTES_MAP = {
   ...HOME_ROUTES_MAP,
@@ -23,6 +26,7 @@ const ROUTES_MAP = {
   ...TAG_ROUTES_MAP,
   ...CATEGORY_ROUTES_MAP,
   ...ARTICLE_ROUTES_MAP,
+  ...AUTH_ROUTES_MAP,
 };
 
 const ROUTES: Array<RouteConfigI> = [
@@ -32,13 +36,32 @@ const ROUTES: Array<RouteConfigI> = [
   ...TAG_ROUTES,
   ...CATEGORY_ROUTES,
   ...ARTICLE_ROUTES,
+  ...AUTH_ROUTES,
 ];
+
+const redirectMain = new Chain((route: RouteConfigI) => {
+  if (route.path === '/') {
+    window.location.href = '/home';
+  }
+  return NEXT_SUCCESSOR;
+});
+const redirectLogin = new Chain((route: RouteConfigI) => {
+  if (localStorage.getItem(MAIN_CONFIG.TOKEN_NAME) || route.auth === false) {
+    return NEXT_SUCCESSOR;
+  }
+  window.location.href = ROUTES_MAP.login;
+});
+const returnComponent = new Chain((route: RouteConfigI) => {
+  const Com = route.component;
+  return <Com />;
+});
+redirectMain.setNextSuccessor(redirectLogin);
+redirectLogin.setNextSuccessor(returnComponent);
 
 const Router = () => {
   function beforeEach(route: RouteConfigI) {
     document.title = route.title;
-    const Com = route.component;
-    return <Com />;
+    return redirectMain.passRequest(route);
   }
 
   return (

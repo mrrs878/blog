@@ -8,15 +8,20 @@ const ajax = axios.create({
 
 ajax.interceptors.request.use((config) => {
   const tmp = clone(config);
-  tmp.headers.Authorization = `${localStorage.getItem(MAIN_CONFIG.TOKEN_NAME)}`;
+  tmp.headers.Authorization = `Bearer ${localStorage.getItem(MAIN_CONFIG.TOKEN_NAME)}`;
   return tmp;
 });
-ajax.interceptors.response.use((response) => {
-  if (response.status !== 200) return Promise.resolve(response.status);
-  if (response.data.msg === 'token已过期') {
+ajax.interceptors.response.use(async (response) => {
+  if ([401, 403].includes(response.data.code)) {
     localStorage.removeItem(MAIN_CONFIG.TOKEN_NAME);
+    // await message.error('登录信息失效');
+    // window.location.href = '/auth/login';
+    return;
   }
   return Promise.resolve(response.data);
-}, (error: Error) => Promise.resolve(error));
+}, (error: any) => {
+  console.log(error);
+  return Promise.resolve(error);
+});
 
 export default ajax;

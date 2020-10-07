@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ReactMarkdown from 'react-markdown';
-import {CalendarOutlined, FolderOutlined} from "@ant-design/icons/lib";
+import {CalendarOutlined, FolderOutlined, UserOutlined} from "@ant-design/icons/lib";
 import {Space} from "antd";
 import {connect} from "react-redux";
 
@@ -40,7 +40,7 @@ const Preview = (props: PropsI) => {
     const src = props.value.split('---');
     const title = src[1].match(/title: (.+)/) || '';
     const head = props.articleInfo.find(item => item.title === title[1])
-      || { title: '', categories: '', createTime: '', tag: '' };
+      || { title: '', categories: '', createTime: '', tag: '', author: '' };
     setFormattedMd({ head, content: src[2] });
   }, [props.value, props.articleInfo]);
   useEffect(() => {
@@ -53,6 +53,7 @@ const Preview = (props: PropsI) => {
         formattedMd?.head.title && <div className={style.titleC}>
           <h1>{ formattedMd?.head?.title }</h1>
           <Space style={{ color: '#999' }}>
+            { formattedMd?.head?.createTime && <span><UserOutlined /> 作者{ formattedMd?.head?.author }</span> }
             { formattedMd?.head?.createTime && <span><CalendarOutlined /> 创建于{ formattedMd?.head?.createTime }</span> }
             { formattedMd?.head?.updateTime && <span>更新于{ formattedMd?.head?.updateTime }</span>}
             { formattedMd?.head?.categories && <span><FolderOutlined /> 分类于<a href={`/all/category/${formattedMd?.head?.categories}`}>{ formattedMd?.head?.categories }</a></span> }

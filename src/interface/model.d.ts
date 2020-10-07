@@ -1,8 +1,8 @@
 interface UserI {
   name: string;
-  accessToken: string;
-  avatar: string;
+  _id: string;
   role: number;
+  token: string;
 }
 
 interface MenuItemI {
@@ -66,6 +66,7 @@ interface ArticleSubI {
   createTime: string;
   updateTime?: string;
   watch?: number;
+  author: string;
 }
 
 interface GithubCommitI {

@@ -2,6 +2,14 @@ interface GetFileHistoryReqI {
   name: string,
 }
 
-interface GetArticleReqI {
+interface GetArticlesReqI {
   id: string;
+}
+
+interface LoginReqI {
+  name: string;
+  password: string;
+}
+
+interface GetUserInfoReqI {
 }

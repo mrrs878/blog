@@ -22,3 +22,11 @@ interface GetDictResT extends BaseResI<DictI>{
 
 interface GetDashboardDataResI extends BaseResI<Array<DashboardDataI>>{
 }
+
+interface GetArticlesResI extends BaseResI<Array<ArticleI>>{
+}
+
+interface GetArticleResI extends BaseResI<ArticleI>{
+}
+
+interface GetUserInfoResI extends BaseResI<UserI> {}
