@@ -68,6 +68,7 @@ const Index = (props: PropsI) => {
             登录
           </Button>
         </Form.Item>
+        {/* <MVerify /> */}
       </Form>
     </div>
   );
