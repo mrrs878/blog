@@ -5,19 +5,20 @@ import { ClickParam } from 'antd/es/menu';
 
 import { connect } from 'react-redux';
 import style from './index.module.less';
-import avatarImg from '../../assets/images/avatar.png';
 import githubLogo from '../../assets/images/github.jpg';
 import npmLogo from '../../assets/images/npm.jpg';
 import { AppState } from '../../store';
 
 interface PropsI extends RouteComponentProps{
   articleInfo: Array<ArticleSubI>;
+  user: UserI;
 }
 
 const { Search } = Input;
 
 const mapState2Props = (state: AppState) => ({
   articleInfo: state.common.articleInfo,
+  user: state.common.user,
 });
 
 const MMenu = (props: PropsI) => {
@@ -49,7 +50,7 @@ const MMenu = (props: PropsI) => {
   return (
     <div className={`container ${style.menuC}`}>
       <div className={style.avatarC}>
-        <img src={avatarImg} style={{ borderRadius: '50%' }} height={120} alt="" />
+        <img src="https://mrrsblog.oss-cn-shanghai.aliyuncs.com/avatar.jpg" style={{ borderRadius: '50%' }} height={120} alt="" />
       </div>
       <div className={style.callMeC}>
         <a href="https://github.com/mrrs878">

@@ -23,9 +23,11 @@ const MComment = (props: { comments: Array<CommentI> }) => (
           key={item._id}
           style={{ display: 'flex', margin: '20px 0', alignItems: 'center' }}
         >
-          {
-            `${props.comments.length - index}# ${item.name}`
-          }
+          <span style={{ width: '60px' }}>
+            {
+              `${props.comments.length - index}# ${item.name}`
+            }
+          </span>
           :
           <div style={{ flex: '1', padding: '10px', margin: '0 20px', backgroundColor: '#f6f6f6', borderRadius: '10px' }}>
             {item.content}
