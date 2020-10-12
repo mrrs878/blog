@@ -21,7 +21,7 @@ const All = (props: PropsI) => {
   useEffect(() => {
     if (props.location.pathname.match(/tag/g)) {
       const { filter } = props.match.params;
-      const tmp = props.articleInfo.filter((item) => item.tag === filter);
+      const tmp = props.articleInfo.filter((item) => item.tags === filter);
       setFormattedArticle(tmp);
     } else if (props.location.pathname.match(/category/g)) {
       const { filter } = props.match.params;
@@ -31,7 +31,7 @@ const All = (props: PropsI) => {
       const src = groupBy((item) => item.createTime.slice(0, 4), props.articleInfo);
       let tmp: Array<ArticleSubI> = [];
       Reflect.ownKeys(src).forEach((item) => {
-        src[item as string].unshift({ createTime: item as string, title: '', tag: '', categories: '', author: '' });
+        src[item as string].unshift({ createTime: item as string, title: '', tags: '', categories: '', author: '' });
         tmp = [...src[item as string], ...tmp];
       });
       setFormattedArticle(tmp);

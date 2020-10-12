@@ -18,7 +18,7 @@ const Tag = (props: PropsI) => {
   const [tags, setTags] = useState<DynamicObjectKey<number>>({});
   useEffect(() => {
     const res: DynamicObjectKey<number> = {};
-    props.articleInfo.map((item) => item.tag).forEach((item) => {
+    props.articleInfo.map((item) => item.tags).forEach((item) => {
       res[item] = res[item] ? res[item] + 1 : 1;
     });
     setTags(res);

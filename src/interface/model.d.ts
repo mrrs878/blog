@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-10-09 09:57:25
+ * @LastEditTime: 2020-10-12 16:41:12
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \blog\src\interface\model.d.ts
+ */
 interface UserI {
   name: string;
   _id: string;
@@ -62,7 +70,7 @@ interface ArticleSubI {
   title: string;
   description?: string;
   categories: string;
-  tag: string;
+  tags: string;
   createTime: string;
   updateTime?: string;
   watch?: number;

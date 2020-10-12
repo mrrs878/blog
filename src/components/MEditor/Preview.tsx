@@ -40,7 +40,7 @@ const Preview = (props: PropsI) => {
     const src = props.value.split('---');
     const title = src[1].match(/title: (.+)/) || '';
     const head = props.articleInfo.find(item => item.title === title[1])
-      || { title: '', categories: '', createTime: '', tag: '', author: '' };
+      || { title: '', categories: '', createTime: '', tags: '', author: '' };
     setFormattedMd({ head, content: src[2] });
   }, [props.value, props.articleInfo]);
   useEffect(() => {
