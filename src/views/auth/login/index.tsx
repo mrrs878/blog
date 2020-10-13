@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message, Modal } from 'antd';
 import useRequest from '../../../hooks/useRequest';
 import { LOGIN } from '../../../api/auth';
 import MAIN_CONFIG from '../../../config';
 import store from '../../../store';
 import { UPDATE_USER } from '../../../store/actions';
+import MVerify from '../../../components/MVerify';
 
 const layout = {
   labelCol: { span: 3, offset: 7 },
@@ -20,6 +21,9 @@ interface PropsI extends RouteComponentProps<any, any> {
 
 const Index = (props: PropsI) => {
   const [, loginRes, login] = useRequest<LoginReqI, LoginResI>(LOGIN, { name: '', password: '' }, false);
+  const [verifyModalF, setVerifyModalF] = useState(false);
+  const [accountInfo, setAccountInfo] = useState<LoginReqI>({ name: 'test', password: 'test' });
+
   useEffect(() => {
     if (!loginRes) return;
     message.info(loginRes.msg);
@@ -30,8 +34,15 @@ const Index = (props: PropsI) => {
     props.history.replace('/');
   }, [loginRes, props.history]);
 
-  async function onFinish(values: any) {
-    login({ name: values.username, password: values.password });
+  async function onVerifySuccess() {
+    const { name, password } = accountInfo;
+    login({ name, password });
+  }
+
+  function onFinish(values: any) {
+    setVerifyModalF(true);
+    const { name, password } = values;
+    setAccountInfo({ name, password });
   }
   function onFinishFailed(errorInfo: any) {
     console.log('Failed:', errorInfo);
@@ -70,8 +81,10 @@ const Index = (props: PropsI) => {
             登录
           </Button>
         </Form.Item>
-        {/* <MVerify /> */}
       </Form>
+      <Modal visible={verifyModalF} footer={null} onCancel={() => setVerifyModalF(false)}>
+        <MVerify onSuccess={onVerifySuccess} />
+      </Modal>
     </div>
   );
 };
