@@ -5,6 +5,8 @@
 
 [🚀](https://blog.mrrs.top)
 
+[dashboard](https://dashboard.blog.mrrs.top)
+
 ## 部署/运行
 
 ### 手动
