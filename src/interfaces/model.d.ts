@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2020-10-09 09:57:25
- * @LastEditTime: 2020-10-12 16:41:12
- * @LastEditors: your name
+ * @LastEditTime: 2020-10-15 14:45:35
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \blog\src\interface\model.d.ts
  */
@@ -95,4 +95,9 @@ interface CommentI {
   _id: string;
   createTime: string;
   avatar?: string;
+}
+
+interface LikeI {
+  articleId: string;
+  name: name;
 }

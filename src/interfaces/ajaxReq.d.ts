@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-10-09 19:52:09
+ * @LastEditTime: 2020-10-15 14:36:48
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \blog\src\interfaces\ajaxReq.d.ts
+ */
 interface GetFileHistoryReqI {
   name: string,
 }
@@ -28,4 +36,16 @@ interface AddCommentReqI {
 
 interface GetCommentsReqI {
   id: string;
+}
+
+interface LikeReqI {
+  articleId: string;
+}
+
+interface UnLikeReqI {
+  articleId: string;
+}
+
+interface GetArticleLikesReqI {
+  id: string
 }

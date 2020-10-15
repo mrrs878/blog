@@ -1,7 +1,15 @@
+/*
+ * @Author: your name
+ * @Date: 2020-10-09 09:57:25
+ * @LastEditTime: 2020-10-15 13:17:20
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \blog\src\hooks\useRequest.ts
+ */
 import { useEffect, useState, useCallback } from 'react';
 
 function useRequest<P, T>(api: (params: P) => Promise<T>, params?: P|undefined, visiable = true)
-  :[boolean, T|undefined, (params?: P) => any, Function] {
+  :[boolean, T|undefined, Function, Function] {
   const [res, setRes] = useState<T>();
   const [loading, setLoading] = useState(() => false);
   const [newParams, setNewParams] = useState<P|undefined>(() => params);
@@ -27,7 +35,8 @@ function useRequest<P, T>(api: (params: P) => Promise<T>, params?: P|undefined, 
   }, []);
 
   const reFetch = () => {
-    if (newParams) setNewParams({ ...newParams });
+    const _newParams = newParams as any;
+    setNewParams({ ..._newParams });
   };
 
   return [loading, res, doFetch, reFetch];

@@ -6,7 +6,6 @@ import ts from 'highlight.js/lib/languages/typescript';
 import shell from 'highlight.js/lib/languages/shell';
 import yaml from 'highlight.js/lib/languages/yaml';
 import json from 'highlight.js/lib/languages/json';
-import 'highlight.js/styles/github.css';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('js', javascript);

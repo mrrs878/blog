@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import ReactMarkdown from 'react-markdown';
-import {CalendarOutlined, FolderOutlined, UserOutlined} from "@ant-design/icons/lib";
-import {Space} from "antd";
+import {CalendarOutlined, FolderOutlined, LikeOutlined, UserOutlined} from "@ant-design/icons/lib";
+import {Badge, Button, Space} from "antd";
 import {connect} from "react-redux";
+import 'highlight.js/styles/a11y-dark.css';
 
 import CodeBlock from './CodeBlock';
 import './preview.module.less';
-import 'highlight.js/styles/a11y-dark.css';
 import '../../assets/less/md.theme.orange.less';
 import style from './preview.module.less';
 import {AppState} from "../../store";
@@ -16,6 +16,9 @@ interface PropsI {
   value: string;
   fullscreen?: boolean;
   articleInfo: Array<ArticleSubI>;
+  isLiked: boolean;
+  likedCount: number;
+  onLikeClick: Function;
 }
 
 const mapState2Props = (state: AppState) => ({
@@ -36,6 +39,7 @@ const Header = (props: any) => {
 
 const Preview = (props: PropsI) => {
   const [formattedMd, setFormattedMd] = useState<{ head: ArticleSubI; content: string }>();
+
   useEffect(() => {
     const src = props.value.split('---');
     const title = src[1].match(/title: (.+)/) || '';
@@ -46,6 +50,11 @@ const Preview = (props: PropsI) => {
   useEffect(() => {
     document.title = formattedMd?.head?.title || 'my blog'
   }, [formattedMd]);
+
+  function onLikeClick() {
+    props.onLikeClick()
+  }
+
   return (
     <MErrorBoundary>
       <div className={`container previewC`} id="write" style={{ display: 'block', overflow: "unset" }}>
@@ -66,6 +75,17 @@ const Preview = (props: PropsI) => {
           code: CodeBlock,
           heading: Header
         }}
+      />
+    </div>
+    <div style={{ textAlign: "center" }}>
+      <Button 
+        onClick={onLikeClick}
+        style={{ outline: 'none', border: "none" }} 
+        icon={
+          <Badge count={props.likedCount}>
+            <LikeOutlined style={{ fontSize: 30, color: props.isLiked ? '#1890ff' : 'rgba(0, 0, 0, 0.65)' }} />
+          </Badge>
+        }
       />
     </div>
     </MErrorBoundary>
