@@ -103,7 +103,7 @@ const Article = (props: PropsI) => {
 
   return (
     <div style={{ padding: 0, marginTop: 0, position: 'relative' }}>
-      <MPreview value={md} fullscreen isLiked={isLiked} onLikeClick={onLikeClick} likedCount={getLikesRes?.data.length || 0} />
+      <MPreview value={md} fullscreen isLiked={isLiked} onLikeClick={onLikeClick} likedCount={getLikesRes?.data?.length || 0} />
       <MContent data={tableOfContent} onContentClick={onContentClick} />
       <MCommentPannel articleId={props.match.params.title} />
       <MGoTop referEle=".previewC" />

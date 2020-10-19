@@ -31,7 +31,7 @@ const All = (props: PropsI) => {
       const src = groupBy((item) => item.createTime.slice(0, 4), props.articleInfo);
       let tmp: Array<ArticleSubI> = [];
       Reflect.ownKeys(src).forEach((item) => {
-        src[item as string].unshift({ createTime: item as string, title: '', tags: '', categories: '', author: '' });
+        src[item as string].unshift({ createTime: item as string, title: '', tags: '', categories: '', author: '', _id: item as string });
         tmp = [...src[item as string], ...tmp];
       });
       setFormattedArticle(tmp);
@@ -40,7 +40,7 @@ const All = (props: PropsI) => {
   return (
     <div className="container homeSearchRef">
       <Timeline>
-        <Timeline.Item style={{ height: '80px', fontSize: '16px' }}>
+        <Timeline.Item style={{ height: '80px', fontSize: '16px' }} key="title">
           <span>
             不错！目前共计：
             { formattedArticle.length }
@@ -49,8 +49,8 @@ const All = (props: PropsI) => {
         </Timeline.Item>
         {
           formattedArticle.map((item) => (
-            <Timeline.Item>
-              <div className={`${style.item} ${item.title === '' ? style.big : ''}`} onClick={() => props.history.push(`/article/${item.title}`)}>
+            <Timeline.Item key={item._id}>
+              <div className={`${style.item} ${item.title === '' ? style.big : ''}`} onClick={() => props.history.push(`/article/${item._id}`)}>
                 {
                   (item.title !== '' ? item.createTime.slice(5, 10) : item.createTime.slice(0, 4))
                   + item.title

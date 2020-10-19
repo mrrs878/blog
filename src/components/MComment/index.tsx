@@ -25,7 +25,7 @@ const MComment = (props: { comments: Array<CommentI> }) => (
         >
           <span style={{ width: '60px' }}>
             {
-              `${props.comments.length - index}# ${item.name}`
+              `${props.comments.length - index}# ${item.user.name}`
             }
           </span>
           :
