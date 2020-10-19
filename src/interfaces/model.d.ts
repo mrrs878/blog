@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-10-09 09:57:25
- * @LastEditTime: 2020-10-19 16:08:19
+ * @LastEditTime: 2020-10-19 19:05:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \blog\src\interface\model.d.ts
@@ -90,7 +90,7 @@ interface GithubCommitI {
 interface CommentI {
   name: string;
   content: string;
-  user: {
+  creator: {
     name: string
   },
   article_id: string;
