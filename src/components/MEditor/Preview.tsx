@@ -19,6 +19,7 @@ interface PropsI {
   isLiked: boolean;
   likedCount: number;
   onLikeClick: Function;
+  articleId: string;
 }
 
 const mapState2Props = (state: AppState) => ({
@@ -42,11 +43,10 @@ const Preview = (props: PropsI) => {
 
   useEffect(() => {
     const src = props.value.split('---');
-    const title = src[1].match(/title: (.+)/) || '';
-    const head = props.articleInfo.find(item => item.title === title[1])
+    const head = props.articleInfo.find(item => item._id === props.articleId)
       || { title: '', categories: '', createTime: '', tags: '', author: '' };
     setFormattedMd({ head, content: src[2] });
-  }, [props.value, props.articleInfo]);
+  }, [props.value, props.articleInfo, props.articleId]);
   useEffect(() => {
     document.title = formattedMd?.head?.title || 'my blog'
   }, [formattedMd]);
