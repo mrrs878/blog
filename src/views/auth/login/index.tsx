@@ -60,7 +60,7 @@ const Index = (props: PropsI) => {
       >
         <Form.Item
           label="用户名"
-          name="username"
+          name="name"
           rules={[{ required: true, message: '请输入用户名' }]}
           initialValue="test"
         >
