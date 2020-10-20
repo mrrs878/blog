@@ -95,9 +95,9 @@ const Article = (props: PropsI) => {
 
   function onLikeClick() {
     if (isLiked) {
-      unlike({ articleId: props.match.params.title });
+      unlike({ article_id: props.match.params.title });
     } else {
-      like({ articleId: props.match.params.title });
+      like({ article_id: props.match.params.title });
     }
   }
 

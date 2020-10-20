@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-10-09 19:52:09
- * @LastEditTime: 2020-10-15 14:36:48
+ * @LastEditTime: 2020-10-20 14:25:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \blog\src\interfaces\ajaxReq.d.ts
@@ -39,11 +39,11 @@ interface GetCommentsReqI {
 }
 
 interface LikeReqI {
-  articleId: string;
+  article_id: string;
 }
 
 interface UnLikeReqI {
-  articleId: string;
+  article_id: string;
 }
 
 interface GetArticleLikesReqI {
