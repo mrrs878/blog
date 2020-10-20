@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-10-09 09:57:25
- * @LastEditTime: 2020-10-20 14:27:47
+ * @LastEditTime: 2020-10-20 17:19:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \blog\src\hooks\useRequest.ts
@@ -35,12 +35,7 @@ function useRequest<P, T>(api: (params: P) => Promise<T>, params?: P, visiable =
     setAutoFetch(true);
   }, []);
 
-  const reFetch = () => {
-    const _newParams = newParams as P;
-    setNewParams({ ..._newParams });
-  };
-
-  return [loading, res, doFetch, reFetch];
+  return [loading, res, doFetch, fetch];
 }
 
 export default useRequest;

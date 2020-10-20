@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-10-20 13:21:48
- * @LastEditTime: 2020-10-20 14:11:32
+ * @LastEditTime: 2020-10-20 17:35:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \blog\src\tools\hooks.ts
@@ -18,14 +18,28 @@ function getInternetState() {
   return onLine ? 'onLine' : 'offLine';
 }
 
-export function useInputValue(initValue: string|number): [string|number, (event: ChangeEvent<HTMLInputElement>) => void] {
+export function useDocumentTitle(newTitle: string) {
+  useEffect(() => {
+    document.title = newTitle;
+    return () => {
+      document.title = 'hello mrrs';
+    };
+  });
+}
+
+export function useInputValue(initValue: string)
+  : [
+    string,
+    (event: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => void,
+    React.Dispatch<React.SetStateAction<string>>
+  ] {
   const [value, setValue] = useState(initValue);
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
     setValue(e.currentTarget.value);
   }, []);
 
-  return [value, onChange];
+  return [value, onChange, setValue];
 }
 
 export function useWindowSizeChange() {
@@ -62,4 +76,13 @@ export function useInternetStateChange() {
   }, [onInternetStateChange]);
 
   return internetState;
+}
+
+export function useWindowScroll(onWindowScrroll: (value?: any) => any) {
+  useEffect(() => {
+    window.addEventListener('scroll', onWindowScrroll);
+    return () => {
+      window.removeEventListener('scroll', onWindowScrroll);
+    };
+  }, [onWindowScrroll]);
 }

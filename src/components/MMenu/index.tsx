@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Input, Menu } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { ClickParam } from 'antd/es/menu';
@@ -8,6 +8,7 @@ import style from './index.module.less';
 import githubLogo from '../../assets/images/github.jpg';
 import npmLogo from '../../assets/images/npm.jpg';
 import { AppState } from '../../store';
+import { useWindowScroll } from '../../tools/hooks';
 
 interface PropsI extends RouteComponentProps{
   articleInfo: Array<ArticleSubI>;
@@ -24,12 +25,13 @@ const mapState2Props = (state: AppState) => ({
 const MMenu = (props: PropsI) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState<Array<string>>([]);
   const [isScroll, setIsScroll] = useState(false);
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      const { y } = document.querySelector('.homeSearchRef')?.getBoundingClientRect() || { y: 0 };
-      setIsScroll(y <= -470);
-    });
+  const onWindowScroll = useCallback(() => {
+    const { y } = document.querySelector('.homeSearchRef')?.getBoundingClientRect() || { y: 0 };
+    setIsScroll(y <= -470);
   }, []);
+
+  useWindowScroll(onWindowScroll);
+
   useEffect(() => {
     if (props.location.pathname === '/') {
       setSelectedMenuItem(['/home']);
@@ -45,6 +47,7 @@ const MMenu = (props: PropsI) => {
 
   function onSearch(e: string) {
     props.history.push(e ? `/home/search/${e}` : '/home');
+    window.scrollTo({ top: 0 });
   }
 
   return (

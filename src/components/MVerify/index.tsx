@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './index.less';
 
 const l = 42; // 滑块边长
@@ -10,15 +10,8 @@ const { PI } = Math;
 const L = l + r * 2 + 3; // 滑块实际边长
 
 interface PropsI {
-  onSuccess: Function
-}
-
-function addClass(tag: any, className: string) {
-  tag.classList.add(className);
-}
-
-function removeClass(tag: any, className: string) {
-  tag.classList.remove(className);
+  onSuccess: () => any;
+  onClose: () => any;
 }
 
 function sum(x: number, y: number) {
@@ -44,20 +37,9 @@ function createElement<T>(tagName: string, className: string = ''): T {
   return elment;
 }
 
-function createCanvas(width: number, height: number) {
-  const canvas = createElement<HTMLCanvasElement>('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  return canvas;
-}
-
-function createImg(onload: (e: Event) => any) {
+function createImg() {
   const img = createElement<HTMLImageElement>('img');
   img.crossOrigin = 'Anonymous';
-  img.onload = onload;
-  img.onerror = () => {
-    img.src = getRandomImg();
-  };
   img.src = getRandomImg();
   return img;
 }
@@ -97,45 +79,42 @@ function drawD(ctx: CanvasRenderingContext2D|null, x: number, y: number, operati
   ctx.globalCompositeOperation = 'overlay';
 }
 
-function createDOM() {
-  const canvas = createCanvas(w, h); // 画布
-  const block = canvas.cloneNode(true) as HTMLCanvasElement; // 滑块
-  const sliderContainer = createElement<HTMLDivElement>('div', 'sliderContainer');
-  const refreshIcon = createElement<HTMLDivElement>('div', 'refreshIcon');
-  const sliderMask = createElement<HTMLDivElement>('div', 'sliderMask');
-  const slider = createElement<HTMLDivElement>('div', 'slider');
-  const sliderIcon = createElement<HTMLSpanElement>('span', 'sliderIcon');
-  const text = createElement<HTMLSpanElement>('span', 'sliderText');
-  const canvasCtx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-  const blockCtx: CanvasRenderingContext2D | null = block.getContext('2d');
-  return {
-    canvas, block, sliderContainer, refreshIcon, sliderMask, slider, sliderIcon, text, canvasCtx, blockCtx,
-  };
+enum DragStatus {
+  pending,
+  start,
+  move,
+  end
+}
+
+enum VerifyStatus {
+  pending,
+  success,
+  fail
 }
 
 const MVerify = (props: PropsI) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { canvas, block, sliderContainer, refreshIcon, sliderMask, slider, sliderIcon, text, canvasCtx, blockCtx } = createDOM();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const blockRef = useRef<HTMLCanvasElement>(null);
+  const sliderContainerRef = useRef<HTMLDivElement>(null);
+  const refreshIconRef = useRef<HTMLDivElement>(null);
+  const sliderMaskRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const sliderIconRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [dragStatus, setDragStatus] = useState(DragStatus.pending);
+  const [moveX, setMoveX] = useState(0);
+  const [blockLeft, setBlockLeft] = useState(0);
+  const [verifyStatus, setVerifyStatus] = useState(VerifyStatus.pending);
+  const [canvasCtx, setCanvasCtx] = useState(canvasRef?.current?.getContext('2d') || null);
+  const [blockCtx, setBlockCtx] = useState(blockRef?.current?.getContext('2d') || null);
+  const [img, setImg] = useState<HTMLImageElement|null>(null);
 
-  let img: HTMLImageElement|null = null;
-  let trail: Array<number> = [];
   const position = { x: 0, y: 0 };
+  const trail: Array<number> = [];
   let blockShape = 0;
   const blockPositionFix = [0, 15, 0];
-
-  function initDOM() {
-    block.className = 'block';
-    text.innerHTML = '向右滑动填充拼图';
-
-    containerRef.current?.appendChild(canvas);
-    containerRef.current?.appendChild(refreshIcon);
-    containerRef.current?.appendChild(block);
-    slider.appendChild(sliderIcon);
-    sliderMask.appendChild(slider);
-    sliderContainer.appendChild(sliderMask);
-    sliderContainer.appendChild(text);
-    containerRef.current?.appendChild(sliderContainer);
-  }
+  let unBindEvents = () => {};
 
   function draw() {
     const x = getRandomNumberByRange(L + 10, w - (L + 10));
@@ -148,23 +127,26 @@ const MVerify = (props: PropsI) => {
   }
 
   function initImg() {
-    const _img = createImg(() => {
+    const _img = createImg();
+    setImg(_img);
+    _img.onload = () => {
       draw();
       const { y, x } = position;
-      canvasCtx?.drawImage(_img, 0, 0, w, h);
       blockCtx?.drawImage(_img, 0, 0, w, h);
+      canvasCtx?.drawImage(_img, 0, 0, w, h);
       const _y = y - r * 2 - 1 + blockPositionFix[blockShape];
       const imageData = blockCtx?.getImageData(x - 3, _y, L, L);
-      block.width = L;
-      if (imageData) blockCtx?.putImageData(imageData, 0, _y);
-    });
-    img = _img;
+      if (imageData && blockCtx) {
+        blockCtx.canvas.width = imageData?.width || 0;
+        blockCtx.putImageData(imageData, 0, _y);
+      }
+    };
   }
 
   function clean() {
     canvasCtx?.clearRect(0, 0, w, h);
     blockCtx?.clearRect(0, 0, w, h);
-    block.width = w;
+    if (blockRef.current) blockRef.current.width = w;
   }
 
   function verify() {
@@ -172,7 +154,7 @@ const MVerify = (props: PropsI) => {
     const average = arr.reduce(sum) / arr.length;
     const deviations = arr.map((x) => x - average);
     const stddev = Math.sqrt(deviations.map(square).reduce(sum) / arr.length);
-    const left = parseInt(block?.style.left || '', 10);
+    const left = parseInt(blockRef?.current?.style?.left || '', 10);
     return {
       spliced: Math.abs(left - position.x) < 10,
       verified: stddev !== 0, // 简单验证下拖动轨迹，为零时表示Y轴上下没有波动，可能非人为操作
@@ -180,24 +162,31 @@ const MVerify = (props: PropsI) => {
   }
 
   function reset() {
-    sliderContainer.className = 'sliderContainer';
-    slider.style.left = '0';
-    block.style.left = '0';
-    sliderMask.style.width = '0';
+    setMoveX(0);
+    setBlockLeft(0);
+    setVerifyStatus(VerifyStatus.pending);
+    setDragStatus(DragStatus.pending);
     clean();
-    if (img) img.src = getRandomImg();
+    initImg();
   }
 
-  function onFail() {}
+  function onFail() {
+    setVerifyStatus(VerifyStatus.fail);
+    setTimeout(() => {
+      reset();
+    }, 1000);
+  }
 
-  function onRefresh() {}
+  function onSuccess() {
+    setVerifyStatus(VerifyStatus.success);
+    setTimeout(() => {
+      props.onClose();
+      props.onSuccess();
+      reset();
+    }, 1000);
+  }
 
   function bindEvents() {
-    refreshIcon.onclick = () => {
-      reset();
-      onRefresh();
-    };
-
     let originX: number;
     let originY: number;
     const _trail: Array<number> = [];
@@ -207,22 +196,20 @@ const MVerify = (props: PropsI) => {
       originX = e.clientX || e.touches[0].clientX;
       originY = e.clientY || e.touches[0].clientY;
       isMouseDown = true;
+      setDragStatus(DragStatus.start);
     };
 
     const handleDragMove = (e: any) => {
       if (!isMouseDown) return false;
       const eventX = e.clientX || e.touches[0].clientX;
       const eventY = e.clientY || e.touches[0].clientY;
-      const moveX = eventX - originX;
+      const _moveX = eventX - originX;
       const moveY = eventY - originY;
-      if (moveX < 0 || moveX + 38 >= w) return false;
-      slider.style.left = `${moveX}px`;
-      const blockLeft = ((w - 40 - 20) / (w - 40)) * moveX;
-      block.style.left = `${blockLeft}px`;
-
-      addClass(sliderContainer, 'sliderContainer_active');
-      sliderMask.style.width = `${moveX}px`;
-      _trail.push(moveY);
+      if (_moveX < 0 || _moveX + 38 >= w) return false;
+      setMoveX(_moveX);
+      setBlockLeft(((w - 40 - 20) / (w - 40)) * _moveX);
+      setDragStatus(DragStatus.move);
+      trail.push(moveY);
     };
 
     const handleDragEnd = (e: any) => {
@@ -230,39 +217,56 @@ const MVerify = (props: PropsI) => {
       isMouseDown = false;
       const eventX = e.clientX || e.changedTouches[0].clientX;
       if (eventX === originX) return false;
-      removeClass(sliderContainer, 'sliderContainer_active');
-      trail = _trail;
+
+      setDragStatus(DragStatus.end);
+
       const { spliced, verified } = verify();
       if (spliced) {
         if (verified) {
-          addClass(sliderContainer, 'sliderContainer_success');
-          props.onSuccess();
+          onSuccess();
         } else {
-          addClass(sliderContainer, 'sliderContainer_fail');
-          text.innerHTML = '再试一次';
-          reset();
+          onFail();
         }
       } else {
-        addClass(sliderContainer, 'sliderContainer_fail');
         onFail();
-        setTimeout(() => {
-          reset();
-        }, 1000);
       }
     };
-    slider?.addEventListener('mousedown', handleDragStart);
-    slider?.addEventListener('touchstart', handleDragStart);
+
+    refreshIconRef?.current?.addEventListener('click', reset);
+    sliderRef?.current?.addEventListener('mousedown', handleDragStart);
+    sliderRef?.current?.addEventListener('touchstart', handleDragStart);
     document.addEventListener('mousemove', handleDragMove);
     document.addEventListener('touchmove', handleDragMove);
     document.addEventListener('mouseup', handleDragEnd);
     document.addEventListener('touchend', handleDragEnd);
+
+    unBindEvents = () => {
+      refreshIconRef?.current?.removeEventListener('click', reset);
+      sliderRef?.current?.removeEventListener('mousedown', handleDragStart);
+      sliderRef?.current?.removeEventListener('touchstart', handleDragStart);
+      document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('touchmove', handleDragMove);
+      document.removeEventListener('mouseup', handleDragEnd);
+      document.removeEventListener('touchend', handleDragEnd);
+    };
   }
 
   useEffect(() => {
-    initDOM();
     initImg();
     bindEvents();
-  }, []);
+    return () => {
+      reset();
+      unBindEvents();
+    };
+  }, [blockCtx]);
+
+  useEffect(() => {
+    setCanvasCtx(canvasRef?.current?.getContext('2d') || null);
+  }, [canvasRef]);
+
+  useEffect(() => {
+    setBlockCtx(blockRef?.current?.getContext('2d') || null);
+  }, [blockRef]);
 
   return (
     <div style={{
@@ -279,7 +283,25 @@ const MVerify = (props: PropsI) => {
         ref={containerRef}
         style={{
           borderRadius: 10, width: 350, height: 200, backgroundColor: '#fff', position: 'relative' }}
-      />
+      >
+        <canvas ref={canvasRef} className="" width={w} height={h} />
+        <div ref={refreshIconRef} className="refreshIcon" />
+        <canvas ref={blockRef} width={w} height={h} style={{ left: `${blockLeft}px` }} className="block" />
+        <div
+          ref={sliderContainerRef}
+          className={`sliderContainer
+            ${dragStatus === DragStatus.move ? 'sliderContainer_active' : ''}
+            ${verifyStatus === VerifyStatus.success ? 'sliderContainer_success' : ''}
+            ${verifyStatus === VerifyStatus.fail ? 'sliderContainer_fail' : ''}
+          `}
+        >
+          <div ref={sliderMaskRef} style={{ width: `${moveX}px` }} className="sliderMask" />
+          <div ref={sliderRef} style={{ left: `${moveX}px` }} className="slider">
+            <span ref={sliderIconRef} className="sliderIcon" />
+          </div>
+          <span ref={textRef} className="sliderText">向右滑动填充拼图</span>
+        </div>
+      </div>
     </div>
   );
 };

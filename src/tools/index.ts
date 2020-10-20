@@ -1,4 +1,13 @@
+/*
+ * @Author: your name
+ * @Date: 2020-09-22 17:26:01
+ * @LastEditTime: 2020-10-20 17:15:01
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \blog\src\tools\index.ts
+ */
 import { createFromIconfontCN } from '@ant-design/icons/es';
+import { curry } from 'ramda';
 import MAIN_CONFIG from '../config';
 
 export function createIconFromIconfont() {
@@ -24,3 +33,5 @@ export function getLocalDate(zone: number, date: Date | string) {
   const utcTime = len + offset;
   return new Date(utcTime + 3600000 * zone);
 }
+
+export const isTruth: (value: any) => boolean = curry((value: any) => !!value);

@@ -11,6 +11,7 @@ import '../../assets/less/md.theme.orange.less';
 import style from './preview.module.less';
 import {AppState} from "../../store";
 import MErrorBoundary from '../MErrorBoundary';
+import { useDocumentTitle } from '../../tools/hooks';
 
 interface PropsI {
   value: string;
@@ -41,15 +42,14 @@ const Header = (props: any) => {
 const Preview = (props: PropsI) => {
   const [formattedMd, setFormattedMd] = useState<{ head: ArticleSubI; content: string }>();
 
+  useDocumentTitle(formattedMd?.head?.title || 'my blog')
+
   useEffect(() => {
     const src = props.value.split('---');
     const head = props.articleInfo.find(item => item._id === props.articleId)
       || { title: '', categories: '', createTime: '', tags: '', author: '' };
     setFormattedMd({ head, content: src[2] });
   }, [props.value, props.articleInfo, props.articleId]);
-  useEffect(() => {
-    document.title = formattedMd?.head?.title || 'my blog'
-  }, [formattedMd]);
 
   function onLikeClick() {
     props.onLikeClick()

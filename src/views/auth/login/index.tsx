@@ -28,7 +28,6 @@ const Index = (props: PropsI) => {
     if (!loginRes) return;
     message.info(loginRes.msg);
     if (!loginRes.success) return;
-    console.log(loginRes);
     localStorage.setItem(MAIN_CONFIG.TOKEN_NAME, loginRes.data.token);
     store.dispatch({ type: UPDATE_USER, data: loginRes.data });
     props.history.replace('/');
@@ -36,7 +35,8 @@ const Index = (props: PropsI) => {
 
   async function onVerifySuccess() {
     const { name, password } = accountInfo;
-    login({ name, password });
+    setVerifyModalF(false);
+    // login({ name, password });
   }
 
   function onFinish(values: any) {
@@ -83,7 +83,7 @@ const Index = (props: PropsI) => {
         </Form.Item>
       </Form>
       <Modal visible={verifyModalF} footer={null} onCancel={() => setVerifyModalF(false)}>
-        <MVerify onSuccess={onVerifySuccess} />
+        <MVerify onSuccess={onVerifySuccess} onClose={() => setVerifyModalF(false)} />
       </Modal>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import hljs from 'highlight.js';
 import javascript from 'highlight.js/lib/languages/javascript';
 import html from 'highlight.js/lib/languages/vbscript-html';
@@ -27,13 +27,11 @@ interface PropsI {
 const CodeBlock = (props: PropsI) => {
   const codeEl = useRef<HTMLElement>(null);
 
-  function highlightCode() {
+  const highlightCode = useCallback(() => {
     if (codeEl.current) hljs.highlightBlock(codeEl.current);
-  }
+  }, [])
 
-  useEffect(() => {
-    highlightCode();
-  });
+  useEffect(highlightCode);
 
   return (
     <pre>

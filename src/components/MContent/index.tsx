@@ -1,7 +1,8 @@
-import React, { ReactText, useEffect, useState, useCallback } from 'react';
+import React, { ReactText, useState, useCallback } from 'react';
 
 import { Tree } from 'antd';
 import style from './index.module.less';
+import { useWindowScroll } from '../../tools/hooks';
 
 interface PropsI {
   data: Array<ContentI>;
@@ -10,17 +11,13 @@ interface PropsI {
 
 const MContent = (props: PropsI) => {
   const [isScroll, setIsScroll] = useState(false);
-
   const onScroll = useCallback(() => {
     const { y } = document.querySelector('.previewC')?.getBoundingClientRect() || { y: 0 };
     setIsScroll(y <= -470);
   }, []);
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [onScroll]);
+
+  useWindowScroll(onScroll);
+
   return (
     <div>
       { props.data.length > 0

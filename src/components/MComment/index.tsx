@@ -1,9 +1,12 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Button, message } from 'antd';
 import { connect } from 'react-redux';
+import { when } from 'ramda';
 import { AppState } from '../../store';
 import useRequest from '../../hooks/useRequest';
+import { useInputValue } from '../../tools/hooks';
 import { ADD_COMMENT, GET_COMMENTS } from '../../api/comment';
+import { isTruth } from '../../tools';
 
 interface PropsI {
   user: UserI;
@@ -42,44 +45,30 @@ const MComment = (props: { comments: Array<CommentI> }) => (
 );
 
 const MCommentPannel = (props: PropsI) => {
-  const [comment, setComment] = useState('');
-  const inputRel = useRef<HTMLTextAreaElement>(null);
-  const [, addCommentRes, addComment] = useRequest<AddCommentReqI, AddCommentResI>(ADD_COMMENT, undefined, false);
-  const [, getCommentsRes, reGetComments] = useRequest<GetCommentsReqI, GetCommentsResI>(GET_COMMENTS, { id: props.articleId });
+  const [, addCommentRes, addComment] = useRequest(ADD_COMMENT, undefined, false);
+  const [, getCommentsRes, , reGetComments] = useRequest(GET_COMMENTS, { id: props.articleId });
+  const [commentVal, onCommentInputChange, setCommentVal] = useInputValue('');
 
   useEffect(() => {
-    if (!addCommentRes) return;
-    message.info(addCommentRes.msg);
-    if (addCommentRes.success) {
-      setComment('');
-      if (inputRel.current) inputRel.current.value = '';
-      reGetComments({ id: props.articleId });
-    }
+    when(isTruth, message.info, addCommentRes?.msg);
+    when(isTruth, reGetComments, addCommentRes?.success);
   }, [addCommentRes, props.articleId, reGetComments]);
-
-  const onInputChange = useCallback(() => {
-    setComment(() => inputRel?.current?.value || '');
-  }, []);
 
   const onPublishClick = useCallback(() => {
     const creator_id = props.user._id;
-    const { name } = props.user;
     const article_id = props.articleId;
-    const avatar = '';
-    if (props.user.token) addComment({ creator_id, content: comment, article_id, name, avatar });
-    else {
-      console.log(111);
-    }
-  }, [addComment, comment, props.articleId, props.user]);
+    addComment({ creator_id, content: commentVal, article_id });
+    setCommentVal('');
+  }, [addComment, commentVal, props.articleId, props.user._id, setCommentVal]);
 
   return (
     <div className="container">
       <MComment comments={getCommentsRes?.data || []} />
       <textarea
-        ref={inputRel}
+        value={commentVal}
         style={{ border: '1px solid #ccc', borderRadius: '10px', height: '100px', outline: 'none', padding: '10px' }}
         placeholder="说点什么吧..."
-        onChange={onInputChange}
+        onChange={onCommentInputChange}
       />
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button onClick={onPublishClick} size="small" type="primary" style={{ marginTop: '20px' }}>
