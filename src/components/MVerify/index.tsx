@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './index.less';
 
 const l = 42; // 滑块边长
@@ -108,7 +108,6 @@ const MVerify = (props: PropsI) => {
   const [verifyStatus, setVerifyStatus] = useState(VerifyStatus.pending);
   const [canvasCtx, setCanvasCtx] = useState(canvasRef?.current?.getContext('2d') || null);
   const [blockCtx, setBlockCtx] = useState(blockRef?.current?.getContext('2d') || null);
-  const [img, setImg] = useState<HTMLImageElement|null>(null);
 
   const position = { x: 0, y: 0 };
   const trail: Array<number> = [];
@@ -128,7 +127,6 @@ const MVerify = (props: PropsI) => {
 
   function initImg() {
     const _img = createImg();
-    setImg(_img);
     _img.onload = () => {
       draw();
       const { y, x } = position;
@@ -189,7 +187,6 @@ const MVerify = (props: PropsI) => {
   function bindEvents() {
     let originX: number;
     let originY: number;
-    const _trail: Array<number> = [];
     let isMouseDown = false;
 
     const handleDragStart = (e: any) => {
