@@ -62,11 +62,11 @@ const MCommentPannel = (props: PropsI) => {
   }, []);
 
   const onPublishClick = useCallback(() => {
-    const user_id = props.user._id;
+    const creator_id = props.user._id;
     const { name } = props.user;
     const article_id = props.articleId;
     const avatar = '';
-    if (props.user.token) addComment({ user_id, content: comment, article_id, name, avatar });
+    if (props.user.token) addComment({ creator_id, content: comment, article_id, name, avatar });
     else {
       console.log(111);
     }

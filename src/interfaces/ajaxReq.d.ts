@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-10-09 19:52:09
- * @LastEditTime: 2020-10-20 14:25:59
+ * @LastEditTime: 2020-10-20 14:57:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \blog\src\interfaces\ajaxReq.d.ts
@@ -28,7 +28,7 @@ interface GetCommentReqI {
 
 interface AddCommentReqI {
   name: string;
-  user_id: string;
+  creator_id: string;
   content: string;
   article_id: string;
   avatar: string;
