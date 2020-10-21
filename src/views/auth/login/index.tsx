@@ -35,7 +35,6 @@ const Index = (props: PropsI) => {
 
   async function onVerifySuccess() {
     const { name, password } = accountInfo;
-    setVerifyModalF(false);
     login({ name, password });
   }
 

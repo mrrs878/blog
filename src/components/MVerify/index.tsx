@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import { Spin } from 'antd';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './index.less';
 
 const l = 42; // 滑块边长
@@ -27,21 +27,8 @@ function getRandomNumberByRange(start: number, end: number) {
 }
 
 function getRandomImg() {
-  // return `https://picsum.photos/350/200/?image=${getRandomNumberByRange(0, 1084)}`;
-  return 'https://i.picsum.photos/id/648/350/200.jpg?hmac=2BO8hrHzcalCSb3b3oKIJ8lvFFd_wyhZakTGj3fDZ0k';
-}
-
-function createElement<T>(tagName: string, className: string = ''): T {
-  const elment = document.createElement(tagName) as any;
-  elment.className = className;
-  return elment;
-}
-
-function createImg() {
-  const img = createElement<HTMLImageElement>('img');
-  img.crossOrigin = 'Anonymous';
-  img.src = getRandomImg();
-  return img;
+  return `https://picsum.photos/350/200?image=${getRandomNumberByRange(0, 1084)}`;
+  // return 'https://i.picsum.photos/id/648/350/200.jpg?hmac=2BO8hrHzcalCSb3b3oKIJ8lvFFd_wyhZakTGj3fDZ0k';
 }
 
 function drawD(ctx: CanvasRenderingContext2D|null, x: number, y: number, operation: 'fill'|'clip', shape: number) {
@@ -102,160 +89,133 @@ const MVerify = (props: PropsI) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const sliderIconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [dragStatus, setDragStatus] = useState(DragStatus.pending);
   const [moveX, setMoveX] = useState(0);
   const [blockLeft, setBlockLeft] = useState(0);
   const [verifyStatus, setVerifyStatus] = useState(VerifyStatus.pending);
   const [canvasCtx, setCanvasCtx] = useState(canvasRef?.current?.getContext('2d') || null);
   const [blockCtx, setBlockCtx] = useState(blockRef?.current?.getContext('2d') || null);
+  const [imgSrc, setImgSrc] = useState(getRandomImg());
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [blockPositionFix] = useState([0, 15, 0]);
+  const [originPosition, setOriginPosition] = useState({ x: 0, y: 0 });
+  const [trail, setTrail] = useState([0]);
+  const [isImgLoading, setIsImgLoading] = useState(true);
 
-  const position = { x: 0, y: 0 };
-  const trail: Array<number> = [];
-  let blockShape = 0;
-  const blockPositionFix = [0, 15, 0];
-  let unBindEvents = () => {};
-
-  function draw() {
-    const x = getRandomNumberByRange(L + 10, w - (L + 10));
-    const y = getRandomNumberByRange(10 + r * 2, h - (L + 10));
-    position.x = x;
-    position.y = y;
-    blockShape = (Math.random() * 100) % 3 >> 0;
-    drawD(canvasCtx, x, y, 'fill', blockShape);
-    drawD(blockCtx, x, y, 'clip', blockShape);
-  }
-
-  function initImg() {
-    const _img = createImg();
-    _img.onload = () => {
-      draw();
-      const { y, x } = position;
-      blockCtx?.drawImage(_img, 0, 0, w, h);
-      canvasCtx?.drawImage(_img, 0, 0, w, h);
-      const _y = y - r * 2 - 1 + blockPositionFix[blockShape];
-      const imageData = blockCtx?.getImageData(x - 3, _y, L, L);
-      if (imageData && blockCtx) {
-        blockCtx.canvas.width = imageData?.width || 0;
-        blockCtx.putImageData(imageData, 0, _y);
-      }
-    };
-  }
-
-  function clean() {
-    canvasCtx?.clearRect(0, 0, w, h);
-    blockCtx?.clearRect(0, 0, w, h);
-    if (blockRef.current) blockRef.current.width = w;
-  }
-
-  function verify() {
-    const arr = trail; // 拖动时y轴的移动距离
+  const verify = useCallback(() => {
+    const arr = trail;
     const average = arr.reduce(sum) / arr.length;
     const deviations = arr.map((x) => x - average);
     const stddev = Math.sqrt(deviations.map(square).reduce(sum) / arr.length);
     const left = parseInt(blockRef?.current?.style?.left || '', 10);
     return {
       spliced: Math.abs(left - position.x) < 10,
-      verified: stddev !== 0, // 简单验证下拖动轨迹，为零时表示Y轴上下没有波动，可能非人为操作
+      verified: stddev !== 0,
     };
-  }
+  }, [position.x, trail]);
 
-  function reset() {
+  const reset = useCallback(() => {
     setMoveX(0);
     setBlockLeft(0);
-    setVerifyStatus(VerifyStatus.pending);
-    setDragStatus(DragStatus.pending);
-    clean();
-    initImg();
-  }
+    setVerifyStatus(() => VerifyStatus.pending);
+    setDragStatus(() => DragStatus.pending);
+    canvasCtx?.clearRect(0, 0, w, h);
+    blockCtx?.clearRect(0, 0, w, h);
+    blockCtx?.canvas?.setAttribute('width', String(w));
+    setIsImgLoading(true);
+    setImgSrc(() => getRandomImg());
+  }, [blockCtx, canvasCtx]);
 
-  function onFail() {
+  const onFail = useCallback(() => {
     setVerifyStatus(VerifyStatus.fail);
-    setTimeout(() => {
-      reset();
-    }, 1000);
-  }
+    setTimeout(reset, 1000);
+  }, [reset]);
 
-  function onSuccess() {
+  const onSuccess = useCallback(() => {
     setVerifyStatus(VerifyStatus.success);
     setTimeout(() => {
       props.onClose();
       props.onSuccess();
       reset();
     }, 1000);
-  }
+  }, [props, reset]);
 
-  function bindEvents() {
-    let originX: number;
-    let originY: number;
-    let isMouseDown = false;
 
-    const handleDragStart = (e: any) => {
-      originX = e.clientX || e.touches[0].clientX;
-      originY = e.clientY || e.touches[0].clientY;
-      isMouseDown = true;
-      setDragStatus(DragStatus.start);
-    };
+  const handleDragStart = useCallback((e: any) => {
+    const x = e.clientX || e.touches[0].clientX;
+    const y = e.clientY || e.touches[0].clientY;
+    setOriginPosition({ x, y });
+    setDragStatus(() => DragStatus.start);
+  }, []);
 
-    const handleDragMove = (e: any) => {
-      if (!isMouseDown) return false;
-      const eventX = e.clientX || e.touches[0].clientX;
-      const eventY = e.clientY || e.touches[0].clientY;
-      const _moveX = eventX - originX;
-      const moveY = eventY - originY;
-      if (_moveX < 0 || _moveX + 38 >= w) return false;
-      setMoveX(_moveX);
-      setBlockLeft(((w - 40 - 20) / (w - 40)) * _moveX);
-      setDragStatus(DragStatus.move);
-      trail.push(moveY);
-    };
+  const handleDragMove = useCallback((e: any) => {
+    if (dragStatus !== DragStatus.start) return false;
+    const eventX = e.clientX || e.touches[0].clientX;
+    const eventY = e.clientY || e.touches[0].clientY;
+    const _moveX = eventX - originPosition.x;
+    const moveY = eventY - originPosition.y;
+    if (_moveX < 0 || _moveX + 38 >= w) return false;
+    setMoveX(_moveX);
+    setBlockLeft(((w - 40 - 20) / (w - 40)) * _moveX);
+    setTrail((_trail) => [..._trail, moveY]);
+  }, [dragStatus, originPosition.x, originPosition.y]);
 
-    const handleDragEnd = (e: any) => {
-      if (!isMouseDown) return false;
-      isMouseDown = false;
-      const eventX = e.clientX || e.changedTouches[0].clientX;
-      if (eventX === originX) return false;
+  const handleDragEnd = useCallback((e: any) => {
+    if (dragStatus !== DragStatus.start) return false;
+    const eventX = e.clientX || e.changedTouches[0].clientX;
+    if (eventX === originPosition.x) return false;
+    const { spliced, verified } = verify();
+    if (spliced && verified) onSuccess();
+    else onFail();
+  }, [dragStatus, onFail, onSuccess, originPosition.x, verify]);
 
-      setDragStatus(DragStatus.end);
-
-      const { spliced, verified } = verify();
-      if (spliced) {
-        if (verified) {
-          onSuccess();
-        } else {
-          onFail();
-        }
-      } else {
-        onFail();
-      }
-    };
-
-    refreshIconRef?.current?.addEventListener('click', reset);
-    sliderRef?.current?.addEventListener('mousedown', handleDragStart);
-    sliderRef?.current?.addEventListener('touchstart', handleDragStart);
-    document.addEventListener('mousemove', handleDragMove);
-    document.addEventListener('touchmove', handleDragMove);
-    document.addEventListener('mouseup', handleDragEnd);
-    document.addEventListener('touchend', handleDragEnd);
-
-    unBindEvents = () => {
-      refreshIconRef?.current?.removeEventListener('click', reset);
-      sliderRef?.current?.removeEventListener('mousedown', handleDragStart);
-      sliderRef?.current?.removeEventListener('touchstart', handleDragStart);
-      document.removeEventListener('mousemove', handleDragMove);
-      document.removeEventListener('touchmove', handleDragMove);
-      document.removeEventListener('mouseup', handleDragEnd);
-      document.removeEventListener('touchend', handleDragEnd);
-    };
-  }
+  const draw = useCallback(() => {
+    if (!imgRef.current) return;
+    setIsImgLoading(false);
+    const x = getRandomNumberByRange(L + 10, w - (L + 10));
+    const y = getRandomNumberByRange(10 + r * 2, h - (L + 10));
+    setPosition(() => ({ x, y }));
+    const _blockShape = (Math.random() * 100) % 3 >> 0;
+    drawD(canvasCtx, x, y, 'fill', _blockShape);
+    drawD(blockCtx, x, y, 'clip', _blockShape);
+    blockCtx?.drawImage(imgRef?.current, 0, 0, w, h);
+    canvasCtx?.drawImage(imgRef?.current, 0, 0, w, h);
+    const _y = y - r * 2 - 1 + blockPositionFix[_blockShape];
+    const imageData = blockCtx?.getImageData(x - 3, _y, L, L);
+    if (imageData) {
+      blockCtx?.canvas.setAttribute('width', String(imageData?.width || L));
+      blockCtx?.putImageData(imageData, 0, _y);
+    }
+  }, [blockCtx, blockPositionFix, canvasCtx]);
 
   useEffect(() => {
-    initImg();
-    bindEvents();
+    if (!imgRef?.current) return;
+    imgRef.current.onload = draw;
+  }, [draw]);
+
+  useEffect(() => {
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('mouseup', handleDragEnd);
     return () => {
-      reset();
-      unBindEvents();
+      document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('mouseup', handleDragEnd);
     };
-  }, [blockCtx]);
+  }, [handleDragEnd, handleDragMove]);
+
+  useEffect(() => {
+    sliderRef?.current?.addEventListener('mousedown', handleDragStart);
+    return () => {
+      sliderRef?.current?.removeEventListener('mousedown', handleDragStart);
+    };
+  }, [sliderRef, handleDragStart]);
+
+  useEffect(() => {
+    refreshIconRef?.current?.addEventListener('click', reset);
+    return () => {
+      refreshIconRef?.current?.removeEventListener('click', reset);
+    };
+  }, [reset, refreshIconRef]);
 
   useEffect(() => {
     setCanvasCtx(canvasRef?.current?.getContext('2d') || null);
@@ -275,19 +235,26 @@ const MVerify = (props: PropsI) => {
       margin: '0 auto',
     }}
     >
-      <p>请完成以下验证后继续:</p>
+      <p className="un-copy">请完成以下验证后继续:</p>
       <div
         ref={containerRef}
         style={{
-          borderRadius: 10, width: 350, height: 200, backgroundColor: '#fff', position: 'relative' }}
+          zIndex: isImgLoading ? 0 : 1,
+          borderRadius: 10,
+          width: 350,
+          height: 200,
+          backgroundColor: '#fff',
+          position: 'relative',
+        }}
       >
-        <canvas ref={canvasRef} className="" width={w} height={h} />
+        <Spin spinning={isImgLoading} size="large" style={{ position: 'absolute', width: w, height: h, lineHeight: `${h}px` }} />
+        <img ref={imgRef} src={imgSrc} alt="" srcSet="" width={w} height={h} crossOrigin="anonymous" style={{ display: 'none' }} />
+        <canvas ref={canvasRef} width={w} height={h} />
         <div ref={refreshIconRef} className="refreshIcon" />
-        <canvas ref={blockRef} width={w} height={h} style={{ left: `${blockLeft}px` }} className="block" />
+        <canvas ref={blockRef} height={h} style={{ left: `${blockLeft}px` }} className="block" />
         <div
           ref={sliderContainerRef}
           className={`sliderContainer
-            ${dragStatus === DragStatus.move ? 'sliderContainer_active' : ''}
             ${verifyStatus === VerifyStatus.success ? 'sliderContainer_success' : ''}
             ${verifyStatus === VerifyStatus.fail ? 'sliderContainer_fail' : ''}
           `}
@@ -296,7 +263,7 @@ const MVerify = (props: PropsI) => {
           <div ref={sliderRef} style={{ left: `${moveX}px` }} className="slider">
             <span ref={sliderIconRef} className="sliderIcon" />
           </div>
-          <span ref={textRef} className="sliderText">向右滑动填充拼图</span>
+          <span ref={textRef} className="sliderText un-copy">向右滑动填充拼图</span>
         </div>
       </div>
     </div>
