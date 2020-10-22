@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Input, Menu } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { ClickParam } from 'antd/es/menu';
 
 import { connect } from 'react-redux';
 import style from './index.module.less';
@@ -41,7 +40,7 @@ const MMenu = (props: PropsI) => {
     setSelectedMenuItem([`/${paths[1]}`]);
   }, [props.location]);
 
-  function onMenuItemClick(item: ClickParam) {
+  function onMenuItemClick(item: any) {
     props.history.push(item.key);
   }
 
