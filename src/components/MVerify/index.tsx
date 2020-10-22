@@ -9,6 +9,8 @@ const h = 200; // canvas高度
 const { PI } = Math;
 const L = l + r * 2 + 3; // 滑块实际边长
 
+const BLOCK_POSITION_FIX = [0, 15, 0];
+
 interface PropsI {
   onSuccess: () => any;
   onClose: () => any;
@@ -80,16 +82,13 @@ enum VerifyStatus {
 }
 
 const MVerify = (props: PropsI) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const blockRef = useRef<HTMLCanvasElement>(null);
-  const sliderContainerRef = useRef<HTMLDivElement>(null);
   const refreshIconRef = useRef<HTMLDivElement>(null);
-  const sliderMaskRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
-  const sliderIconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const resultRef = useRef<HTMLSpanElement>(null);
   const [dragStatus, setDragStatus] = useState(DragStatus.pending);
   const [moveX, setMoveX] = useState(0);
   const [blockLeft, setBlockLeft] = useState(0);
@@ -98,16 +97,14 @@ const MVerify = (props: PropsI) => {
   const [blockCtx, setBlockCtx] = useState(blockRef?.current?.getContext('2d') || null);
   const [imgSrc, setImgSrc] = useState(getRandomImg());
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [blockPositionFix] = useState([0, 15, 0]);
   const [originPosition, setOriginPosition] = useState({ x: 0, y: 0 });
   const [trail, setTrail] = useState([0]);
   const [isImgLoading, setIsImgLoading] = useState(true);
 
   const verify = useCallback(() => {
-    const arr = trail;
-    const average = arr.reduce(sum) / arr.length;
-    const deviations = arr.map((x) => x - average);
-    const stddev = Math.sqrt(deviations.map(square).reduce(sum) / arr.length);
+    const average = trail.reduce(sum) / trail.length;
+    const deviations = trail.map((x) => x - average);
+    const stddev = Math.sqrt(deviations.map(square).reduce(sum) / trail.length);
     const left = parseInt(blockRef?.current?.style?.left || '', 10);
     return {
       spliced: Math.abs(left - position.x) < 10,
@@ -118,22 +115,27 @@ const MVerify = (props: PropsI) => {
   const reset = useCallback(() => {
     setMoveX(0);
     setBlockLeft(0);
-    setVerifyStatus(() => VerifyStatus.pending);
-    setDragStatus(() => DragStatus.pending);
+    setTrail([0]);
+    setPosition({ x: 0, y: 0 });
+    setVerifyStatus(VerifyStatus.pending);
+    setDragStatus(DragStatus.pending);
+    setIsImgLoading(true);
     canvasCtx?.clearRect(0, 0, w, h);
     blockCtx?.clearRect(0, 0, w, h);
     blockCtx?.canvas?.setAttribute('width', String(w));
-    setIsImgLoading(true);
-    setImgSrc(() => getRandomImg());
+    setImgSrc(getRandomImg());
+    if (resultRef.current) resultRef.current.innerText = '';
   }, [blockCtx, canvasCtx]);
 
   const onFail = useCallback(() => {
     setVerifyStatus(VerifyStatus.fail);
+    if (resultRef.current) resultRef.current.innerText = '验证失败，请重试';
     setTimeout(reset, 1000);
   }, [reset]);
 
   const onSuccess = useCallback(() => {
     setVerifyStatus(VerifyStatus.success);
+    if (resultRef.current) resultRef.current.innerText = '验证成功';
     setTimeout(() => {
       props.onClose();
       props.onSuccess();
@@ -181,18 +183,20 @@ const MVerify = (props: PropsI) => {
     drawD(blockCtx, x, y, 'clip', _blockShape);
     blockCtx?.drawImage(imgRef?.current, 0, 0, w, h);
     canvasCtx?.drawImage(imgRef?.current, 0, 0, w, h);
-    const _y = y - r * 2 - 1 + blockPositionFix[_blockShape];
+    const _y = y - r * 2 - 1 + BLOCK_POSITION_FIX[_blockShape];
     const imageData = blockCtx?.getImageData(x - 3, _y, L, L);
     if (imageData) {
       blockCtx?.canvas.setAttribute('width', String(imageData?.width || L));
       blockCtx?.putImageData(imageData, 0, _y);
     }
-  }, [blockCtx, blockPositionFix, canvasCtx]);
+  }, [blockCtx, canvasCtx]);
 
   useEffect(() => {
-    if (!imgRef?.current) return;
-    imgRef.current.onload = draw;
-  }, [draw]);
+    imgRef?.current?.addEventListener('load', draw);
+    return () => {
+      imgRef?.current?.removeEventListener('load', draw);
+    };
+  }, [imgRef, draw]);
 
   useEffect(() => {
     document.addEventListener('mousemove', handleDragMove);
@@ -237,7 +241,6 @@ const MVerify = (props: PropsI) => {
     >
       <p className="un-copy">请完成以下验证后继续:</p>
       <div
-        ref={containerRef}
         style={{
           zIndex: isImgLoading ? 0 : 1,
           borderRadius: 10,
@@ -248,20 +251,27 @@ const MVerify = (props: PropsI) => {
         }}
       >
         <Spin spinning={isImgLoading} size="large" style={{ position: 'absolute', width: w, height: h, lineHeight: `${h}px` }} />
-        <img ref={imgRef} src={imgSrc} alt="" srcSet="" width={w} height={h} crossOrigin="anonymous" style={{ display: 'none' }} />
+        <img ref={imgRef} src={imgSrc} alt="" srcSet="" width={w} height={h} crossOrigin="anonymous" style={{ zIndex: -1, position: 'absolute' }} />
         <canvas ref={canvasRef} width={w} height={h} />
         <div ref={refreshIconRef} className="refreshIcon" />
         <canvas ref={blockRef} height={h} style={{ left: `${blockLeft}px` }} className="block" />
+        <span
+          ref={resultRef}
+          className={`resultTip
+            ${verifyStatus === VerifyStatus.success ? 'success' : ''}
+            ${verifyStatus === VerifyStatus.fail ? 'fail' : ''}
+          `}
+          style={{ opacity: verifyStatus === VerifyStatus.pending ? 0 : 1 }}
+        />
         <div
-          ref={sliderContainerRef}
           className={`sliderContainer
             ${verifyStatus === VerifyStatus.success ? 'sliderContainer_success' : ''}
             ${verifyStatus === VerifyStatus.fail ? 'sliderContainer_fail' : ''}
           `}
         >
-          <div ref={sliderMaskRef} style={{ width: `${moveX}px` }} className="sliderMask" />
+          <div style={{ width: `${moveX}px` }} className="sliderMask" />
           <div ref={sliderRef} style={{ left: `${moveX}px` }} className="slider">
-            <span ref={sliderIconRef} className="sliderIcon" />
+            <span className="sliderIcon" />
           </div>
           <span ref={textRef} className="sliderText un-copy">向右滑动填充拼图</span>
         </div>
