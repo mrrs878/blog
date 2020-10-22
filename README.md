@@ -2,6 +2,7 @@
 
 [![Build Status](https://www.travis-ci.org/mrrs878/blog.svg?branch=master)](https://www.travis-ci.org/mrrs878/blog)
 ![GitHub top language](https://img.shields.io/github/languages/top/mrrs878/blog)
+![Node.js CI](https://github.com/mrrs878/blog/workflows/Node.js%20CI/badge.svg)
 
 [🚀](https://blog.mrrs.top)
 
