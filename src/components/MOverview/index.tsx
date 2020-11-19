@@ -29,7 +29,7 @@ const MOverview = (props: PropsI) => (
         <TagOutlined style={{ color: '#40a9ff' }} />
         <span className={style.itemFooterHC}>
           ：
-          { props.tag }
+          { props.tags }
         </span>
       </span>
       <span>

@@ -39,8 +39,8 @@ const Preview = (props: PropsI) => {
   useEffect(() => {
     const src = props.value.split('---');
     const title = src[1].match(/title: (.+)/) || '';
-    const head = props.articleInfo.find(item => item.title === title[1])
-      || { title: '', categories: '', createTime: '', tag: '' };
+    const head = props.articleInfo.find(item => item.title.trim() === title[1])
+    || { title: '', categories: '', createTime: '', tags: '' };
     setFormattedMd({ head, content: src[2] });
   }, [props.value, props.articleInfo]);
   useEffect(() => {

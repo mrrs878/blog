@@ -21,18 +21,17 @@ const All = (props: PropsI) => {
   useEffect(() => {
     if (props.location.pathname.match(/tag/g)) {
       const { filter } = props.match.params;
-      const tmp = props.articleInfo.filter((item) => item.tag === filter);
+      const tmp = props.articleInfo.filter((item) => item.tags === filter);
       setFormattedArticle(tmp);
     } else if (props.location.pathname.match(/category/g)) {
       const { filter } = props.match.params;
-      console.log(filter)
       const tmp = props.articleInfo.filter((item) => item.categories === filter);
       setFormattedArticle(tmp);
     } else {
       const src = groupBy((item) => item.createTime.slice(0, 4), props.articleInfo);
       let tmp: Array<ArticleSubI> = [];
       Reflect.ownKeys(src).forEach((item) => {
-        src[item as string].unshift({ createTime: item as string, title: '', tag: '', categories: '' });
+        src[item as string].unshift({ createTime: item as string, title: '', tags: '', categories: '' });
         tmp = [...src[item as string], ...tmp];
       });
       setFormattedArticle(tmp);
@@ -51,7 +50,7 @@ const All = (props: PropsI) => {
         {
           formattedArticle.map((item) => (
             <Timeline.Item>
-              <div className={`${style.item} ${item.title === '' ? style.big : ''}`} onClick={() => props.history.push(`/article/${item.title}`)}>
+              <div className={`${style.item} ${item.title === '' ? style.big : ''}`} onClick={() => props.history.push(`/article/${item._id}`)}>
                 {
                   (item.title !== '' ? item.createTime.slice(5, 10) : item.createTime.slice(0, 4))
                   + item.title

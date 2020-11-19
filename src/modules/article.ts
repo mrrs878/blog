@@ -54,7 +54,7 @@ const ARTICLE_MODULE = {
             ?.slice(0, 200);
           totalWord += res?.default.length || 0;
           const [title, createTime, tag, category] = info.slice(1, 5).map((infoItem: string) => infoItem.trimStart());
-          articleInfo.push({ title, createTime, tag, categories: category, description });
+          articleInfo.push({ title, createTime, tags: tag, categories: category, description });
         });
       });
       setTimeout(() => {

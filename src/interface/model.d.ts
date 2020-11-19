@@ -62,7 +62,7 @@ interface ArticleSubI {
   title: string;
   description?: string;
   categories: string;
-  tag: string;
+  tags: string;
   createTime: string;
   updateTime?: string;
   watch?: number;

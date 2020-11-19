@@ -17,7 +17,7 @@ const mapState2Props = (state: AppState) => ({
 
 const handlerTag = new Chain((path: string, keywords: string, src: Array<ArticleSubI>) => {
   if (path.match(/tag/g)) {
-    return src.filter((item) => item.tag.includes(keywords));
+    return src.filter((item) => item.tags.includes(keywords));
   }
   return NEXT_SUCCESSOR;
 });
@@ -29,7 +29,7 @@ const handlerCat = new Chain((path: string, keywords: string, src: Array<Article
 });
 const handleSearch = new Chain((path: string, keywords: string, src: Array<ArticleSubI>) => {
   const reg = new RegExp(keywords, 'ig');
-  return (keywords ? src.filter((item) => item.title.match(reg) || item.tag.match(reg) || item.categories.match(reg)) : src);
+  return (keywords ? src.filter((item) => item.title.match(reg) || item.tags.match(reg) || item.categories.match(reg)) : src);
 });
 handlerTag.setNextSuccessor(handlerCat);
 handlerCat.setNextSuccessor(handleSearch);
@@ -53,7 +53,7 @@ const Index: React.FC<PropsI> = (props: PropsI) => {
             title={item.title}
             description={item.description}
             categories={item.categories}
-            tag={item.tag}
+            tags={item.tags}
             createTime={item.createTime}
             updateTime={item.updateTime}
             watch={0}
